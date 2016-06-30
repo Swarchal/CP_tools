@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import os
+
 """
 Functions for extracting data from file paths produced by
 the ImagXpress.
@@ -24,6 +26,14 @@ def get_filename(x):
         filename = str(line.split("/")[-1])
         files.append(filename)
     return files
+
+def get_path(x):
+    """Get the path up until the image URL"""
+    paths = []
+    for line in open(x, "r").readlines():
+        p, f = os.path.split(line)
+        paths.append(p)
+    return paths
 
 
 def get_platenum(x):
@@ -82,7 +92,8 @@ def get_metadata_site(x, char="_"):
 
 
 def get_metadata_channel(x, char="_"):
-    """Return channel numbers from file paths"""
+    """Return channel numbers from file paths
+       note: assumes channel numbers never exceed 9"""
     url = get_filename(x)
     channels = []
     for line in url:
@@ -92,4 +103,4 @@ def get_metadata_channel(x, char="_"):
 
 
 if __name__ == "__main__":
-    [print(i) for i in get_filename("out_test.txt")]
+    print get_metadata_well("out_test.txt")
