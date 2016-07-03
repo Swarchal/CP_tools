@@ -13,8 +13,13 @@ text = "tmp/filenames.txt"
 colnames = ["URL", "path", "Metadata_platename", "Metadata_well",
             "Metadata_site", "Metadata_channel"]
 
+# sanity check filenames
+with open(text) as f:
+    filenames = pp.get_filename(text)
+    pp.check_filename(filenames)
+
 df = pd.DataFrame(
-                  zip(pp.get_filename(text),
+                  zip(filenames,
                       pp.get_path(text),
                       pp.get_platename(text),
                       pp.get_metadata_well(text),

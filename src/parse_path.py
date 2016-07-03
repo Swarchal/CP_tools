@@ -20,6 +20,7 @@ def only_tifs(x):
                 images.append(str(line))
     return images
 
+
 def get_filename(x):
     """ Get the final image URL"""
     files = []
@@ -28,6 +29,23 @@ def get_filename(x):
             filename = str(line.split("/")[-1])
             files.append(filename)
     return files
+
+
+def check_filename(x, char="_"):
+    """
+    Sanity check for list of filenames
+    - check it's not an empty line
+    - see if length when split == 4
+    """
+    for f in x:
+        # if length of file less than 20 characters
+        if len(f) < 20:
+            raise ValueError("Filename {} too short".format(f))
+        # if not split into 4 by underscores, then missing a metadata
+        # category, i.e no site information is present
+        if len(f.split(char)) < 4:
+            raise ValueError("Filename {} contains too few metadata values".format(f))
+
 
 def get_path(x):
     """Get the path up until the image URL"""
