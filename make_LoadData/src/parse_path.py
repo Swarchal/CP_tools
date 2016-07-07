@@ -8,6 +8,7 @@ the ImagXpress.
 
 NOTE:
      These functions will not work if the plate name contains an underscore
+     Also, assumes the well was imaged with multiple sites
 """
 
 
