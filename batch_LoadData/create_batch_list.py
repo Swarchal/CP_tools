@@ -1,3 +1,5 @@
+import os
+
 def count_lines(fname):
     """return the number of lines in a file"""
     with open(fname) as f:
@@ -7,7 +9,7 @@ def count_lines(fname):
 
 
 def create_batch_list(file_list, pipeline, n_chunks=None,
-                      output_prefix="output"):
+                      output_prefix="output", full_path=True):
     """
     Create a list of cellprofiler commands for batch analysis from a filelist
     and a pipeline.
@@ -20,7 +22,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
     20 imagesets.
 
     params:
-        file_list - csv file suitable for load_data
+        file_list - path to csv file suitable for load_data
         pipeline - cellprofiler pipeline that contains a valid LoadData module
         n_chunks - number of processes to run in parallel
         output_prefix - prefix for the output folder
@@ -34,6 +36,10 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
 
     chunk_size = n_imagesets / n_chunks
     remainder = n_imagesets - (chunk_size * n_chunks)
+
+    if full_path == False:
+        # trim path to just file name
+        file_list = file_list.split(os.sep)[-1]
 
     output = []
     for i, val in enumerate(range(0, n_chunks), 1):
@@ -68,7 +74,8 @@ if __name__ == '__main__':
     out =  create_batch_list(
         "/home/scott/Dropbox/CP_tools/make_LoadData/load_data_input.csv",
         "pipeline.cppipe",
-        200)
+        200,
+        full_path=False)
 
     for i in out:
         print i
