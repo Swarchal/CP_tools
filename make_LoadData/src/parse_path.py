@@ -27,8 +27,8 @@ def get_filename(x):
     files = []
     with open(x) as f:
         for line in f:
-            filename = str(line.split("/")[-1])
-            files.append(filename)
+            filename = str(line.split(os.sep)[-1])
+            files.append(filename.strip())
     return files
 
 
@@ -54,7 +54,7 @@ def get_path(x):
     with open(x) as f:
         for line in f:
             p, f = os.path.split(line)
-            paths.append(p)
+            paths.append(p.strip())
     return paths
 
 
@@ -63,7 +63,7 @@ def get_platenum(x):
     plates = []
     with open(x) as f:
         for line in f:
-            plates.append(int(line.split("/")[-2]))
+            plates.append(int(line.split(os.sep)[-2]))
     return plates
 
 
@@ -72,7 +72,7 @@ def get_platename(x):
     plates = []
     with open(x) as f:
         for line in f:
-            plates.append(line.split("/")[-4])
+            plates.append(line.split(os.sep)[-4])
     return plates
 
 
@@ -81,7 +81,7 @@ def get_date(x):
     dates = []
     with open(x) as f:
         for line in f:
-            dates.append(line.split("/")[-3])
+            dates.append(line.split(os.sep)[-3])
     return dates
 
 
