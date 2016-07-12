@@ -35,9 +35,9 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
 
     if n_chunks == None:
         #split into chunks containing roughly 20 imagesets
-        n_chunks = n_imagesets / chunk_size
+        n_chunks = n_imagesets // chunk_size
 
-    chunk_size = n_imagesets / n_chunks
+    chunk_size = n_imagesets // n_chunks
     remainder = n_imagesets - (chunk_size * n_chunks)
 
     if full_path == False:
