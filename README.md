@@ -2,9 +2,10 @@
 
 Geared towards ImageXpress file directories and SGE job submissions.
 
-- **batch_insert** substitutes `--get-batch-commands` output into a qsub script
+
 - **make_LoadData** creates a .csv file for the LoadData module from an ImageXpress file directory
 - **batch_LoadData** splits a LoadData .csv file into multiple cellprofiler commands to run as separate processes.
+- **batch_insert** substitutes `batch_LoadData` or `--get-batch-commands` output into a qsub script
 
 ## Example
 
@@ -114,6 +115,8 @@ cd /exports/eddie/scratch/s1027820/test_2
 # cellprofiler command
 cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 1 -l 10 -o /scratch/project_1_output_1
 ```
+
+Note that this also works with the built in `--get-batch-commands` output.
 
 ### 5. Submitting the jobs to the cluster
 
