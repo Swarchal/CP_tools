@@ -33,7 +33,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
     if n_chunks != None and chunk_size != 20:
         print ValueError("Cannot specify both chunk_size and n_chunks")
 
-    if n_chunks == None:
+    if n_chunks == None or 0:
         #split into chunks containing roughly 20 imagesets
         n_chunks = n_imagesets // chunk_size
 
@@ -77,7 +77,7 @@ if __name__ == '__main__':
     out =  create_batch_list(
         file_list="/home/scott/Dropbox/CP_tools/make_LoadData/load_data_input.csv",
         pipeline="20160711_cp_test2.cppipe",
-        chunk_size=10,
+        n_chunks=20,
         output_prefix="/exports/eddie/scratch/s1027820/output_",
         full_path=False)
 
