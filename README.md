@@ -43,12 +43,12 @@ This creates a file containing 500 cellprofiler commands. e.g
 
 ```
 cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 1 -l 10 -o /scratch/project_1_output_1
-cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 11 -l 20 -o /scratch_/project_1_output_2
+cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 11 -l 20 -o /scratch/project_1_output_2
 cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 21 -l 30 -o /scratch/project_1_output_3
 ...
 ```
 
-Or alternatively, we can pass the chunk_size.
+Or alternatively, we can pass the chunk_size, this this will split the job into cellprofiler scripts containing roughly 30 images each.
 
 ```python
 create_batch_list(file_list="~/data/load_data_input.csv"
@@ -94,12 +94,31 @@ write_batch_scripts(template="cp_run.sh",
                     batch_file="batch_out.txt")
 ```
 
-This will generate a sequentially numbered qsub script name `out_1` ... `out_n`.
+This will generate a sequentially numbered qsub script name `out_1` ... `out_n`, with `PLACEHOLDER` substituted in each file for a cellprofiler script. So `out_0` will be:
+
+```sh
+#!/bin/sh
+#$ -l h_vmem=10G
+#$ -cwd
+#$ -l h_rt:10:00:00
+
+# activate python virtual environment for dependencies
+source /home/s1027820/virtualenv-1.10/myVE/bin/activate
+
+# source bash profile for correct java paths
+source /home/s1027820/.bash_profile
+
+# cd to directory containing images and pipeline
+cd /exports/eddie/scratch/s1027820/test_2
+
+# cellprofiler command
+cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input.csv -f 1 -l 10 -o /scratch/project_1_output_1
+```
 
 ### 5. Submitting the jobs to the cluster
 
-This can be done with a bash loop.
+This can be done with a bash loop, so if we have 200 out files we want to run.
 
 ```sh
-for i in {1..200}; do qsub out_$i; done
+for i in {0..199}; do qsub out_$i; done
 ```
