@@ -9,7 +9,7 @@ def count_lines(fname):
 
 
 def create_batch_list(file_list, pipeline, n_chunks=None,
-                      output_prefix="output", full_path=True):
+                      output_prefix="output", full_path=True, chunk_size=20):
     """
     Create a list of cellprofiler commands for batch analysis from a filelist
     and a pipeline.
@@ -30,9 +30,12 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
 
     n_imagesets = count_lines(file_list)
 
+    if n_chunks != None and chunk_size != 20:
+        print ValueError("Cannot specify both chunk_size and n_chunks")
+
     if n_chunks == None:
         #split into chunks containing roughly 20 imagesets
-        n_chunks = n_imagesets / 20
+        n_chunks = n_imagesets / chunk_size
 
     chunk_size = n_imagesets / n_chunks
     remainder = n_imagesets - (chunk_size * n_chunks)
@@ -44,7 +47,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
     output = []
     for i, val in enumerate(range(0, n_chunks), 1):
         if i < n_chunks:
-            x = "cellprofiler -r -c -p {} --data_file={} -f {} -l {} -o {}{}".format(
+            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}{}".format(
                 pipeline,
                 file_list,
                 ((i-1) * chunk_size) + 1,
@@ -53,7 +56,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
                 i
             )
         else:
-            x = "cellprofiler -r -c -p {} --data_file={} -f {} -l {} -o {}{}".format(
+            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}{}".format(
                 pipeline,
                 file_list,
                 ((i-1) * chunk_size) + 1,
@@ -72,10 +75,12 @@ if __name__ == '__main__':
 
     # quick check
     out =  create_batch_list(
-        "/home/scott/Dropbox/CP_tools/make_LoadData/load_data_input.csv",
-        "pipeline.cppipe",
-        200,
+        file_list="/home/scott/Dropbox/CP_tools/make_LoadData/load_data_input.csv",
+        pipeline="20160711_cp_test2.cppipe",
+        chunk_size=10,
+        output_prefix="/exports/eddie/scratch/s1027820/output_",
         full_path=False)
 
+with open("out_file.txt", "w") as f:
     for i in out:
-        print i
+        f.write(i + "\n")
