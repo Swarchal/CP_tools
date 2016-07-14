@@ -134,9 +134,9 @@ To merge these into a single file use `merge_output`, which takes a directory co
 
 e.g
 ```sh
-python merge_output "/path/to/directory"
+python merge_output.py "/path/to/directory"
 ```
 This saves the resulting .csv file in the current working directory. To save it elsewhere pass an additional command line argument:
 ```sh
-python merge_output "/path/to/directory" "/path/to/save/location"
+python merge_output.py "/path/to/directory" "/path/to/save/location"
 ```
