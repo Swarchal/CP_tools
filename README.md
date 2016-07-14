@@ -95,7 +95,7 @@ write_batch_scripts(template="cp_run.sh",
                     batch_file="batch_out.txt")
 ```
 
-This will generate a sequentially numbered qsub script name `out_1` ... `out_n`, with `PLACEHOLDER` substituted in each file for a cellprofiler script. So `out_0` will be:
+This will generate a sequentially numbered qsub script name `out_0` ... `out_n`, with `PLACEHOLDER` substituted in each file for a cellprofiler script. So `out_0` will be:
 
 ```sh
 #!/bin/sh
@@ -124,4 +124,19 @@ This can be done with a bash loop, so if we have 200 out files we want to run.
 
 ```sh
 for i in {0..199}; do qsub out_$i; done
+```
+
+### 6. Merging the output
+
+This generates n .csv files, where n is the number of chunks/jobs you split the task into.
+
+To merge these into a single file use `merge_output`, which takes a directory containing all the output as an argument and creates a single merged .csv file.
+
+e.g
+```sh
+python merge_output "/path/to/directory"
+```
+This saves the resulting .csv file in the current working directory. To save it elsewhere pass an additional command line argument:
+```sh
+python merge_output "/path/to/directory" "/path/to/save/location"
 ```
