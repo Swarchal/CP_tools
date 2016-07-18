@@ -70,7 +70,7 @@ e.g if we have a template file called `cp_run.sh`:
 #!/bin/sh
 #$ -l h_vmem=10G
 #$ -cwd
-#$ -l h_rt:10:00:00
+#$ -l h_rt=10:00:00
 
 # activate python virtual environment for dependencies
 source /home/s1027820/virtualenv-1.10/myVE/bin/activate
@@ -101,7 +101,7 @@ This will generate a sequentially numbered qsub script name `out_0` ... `out_n`,
 #!/bin/sh
 #$ -l h_vmem=10G
 #$ -cwd
-#$ -l h_rt:10:00:00
+#$ -l h_rt=10:00:00
 
 # activate python virtual environment for dependencies
 source /home/s1027820/virtualenv-1.10/myVE/bin/activate
