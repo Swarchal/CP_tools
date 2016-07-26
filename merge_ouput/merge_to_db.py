@@ -1,6 +1,8 @@
 import os
 import pandas as pd
+import colfuncs
 from sqlalchemy import create_engine
+
 
 class ResultsDirectory:
 
@@ -29,18 +31,20 @@ class ResultsDirectory:
 
     # create sqlite database
     def create_db(self, location, db_name="results"):
-        self.engine = create_engine('sqlite:///%s/%s.sqlite' % (location, db_name))
+        self.engine = create_engine("sqlite:///%s/%s.sqlite" % (location, db_name))
 
 
     # write csv files to database
     # currently appending all to the same table
     def to_db(self):
-        for x,_ in enumerate(self.file_paths):
+        for x, _ in enumerate(self.file_paths):
             f = self.file_paths[x]
-            tmp_file = pd.read_csv(f, iterator=True, chunksize=1000)
+            tmp_file = pd.read_csv(f, header=[0,1], iterator=True,
+                chunksize=1000)
             all_file = pd.concat(tmp_file)
+            all_file.columns = colfuncs.collapse_cols(all_file)
             all_file.to_sql("DATA", con=self.engine,
-                flavor ='sqlite', index=False, if_exists='append',
+                flavor ="sqlite", index=False, if_exists="append",
                 chunksize=1000)
 
 if __name__ == '__main__':
