@@ -3,9 +3,8 @@ import pandas as pd
 import colfuncs
 from sqlalchemy import create_engine
 
-#TODO enable multiple tables for each datatype, i.e table for DATA, IMAGE
-
 class ResultsDirectory:
+
 
     """
     Directory containing the .csv from a CellProfiler run
@@ -34,7 +33,6 @@ class ResultsDirectory:
 
 
     # write csv files to database
-    # currently appending all to the same table
     def to_db(self, select="DATA", header=[0,1]):
         """
         select: the name of the .csv file, this will also be the database table
