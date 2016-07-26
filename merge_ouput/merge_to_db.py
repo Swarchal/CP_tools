@@ -44,6 +44,6 @@ class ResultsDirectory:
                 chunksize=1000)
 
 if __name__ == '__main__':
-    x = ResultsDirectory("/home/scott/multi_index_test
+    x = ResultsDirectory("/home/scott/multi_index_test")
     x.create_db("/home/scott")
     x.to_db()
