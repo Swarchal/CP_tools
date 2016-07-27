@@ -44,7 +44,8 @@ class ResultsDirectory:
 
         for x, _ in enumerate(file_paths):
             f = file_paths[x]
-            tmp_file = pd.read_csv(f, header=header, iterator=True)
+            tmp_file = pd.read_csv(f, header=header, chunksize=1000,
+                iterator=True)
             all_file = pd.concat(tmp_file) # collect iterator
 
             # collapse column names if multi-indexed
