@@ -33,7 +33,7 @@ class ResultsDirectory:
 
 
     # write csv files to database
-    def to_db(self, select="DATA", header=[0,1]):
+    def to_db(self, select="DATA", header=0):
         """
         select: the name of the .csv file, this will also be the database table
         header: the number of header rows.
@@ -53,6 +53,7 @@ class ResultsDirectory:
 
             all_file.to_sql(select, con=self.engine,
                 flavor ="sqlite", index=False, if_exists="append")
+
 
 if __name__ == '__main__':
     x = ResultsDirectory("/home/scott/multi_index_test")
