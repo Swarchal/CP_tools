@@ -16,7 +16,7 @@ def write_batch_scripts(template, placeholder, batch_file):
     tmp = open(template).read()
     inputs = open(batch_file).readlines()
 
-    for i, cmd in enumerate(inputs):
+    for i, cmd in enumerate(inputs, 1):
         out = tmp.replace(placeholder, cmd)
         outfile = open("out_{}".format(i), "w")
         outfile.write(out)
@@ -25,4 +25,4 @@ def write_batch_scripts(template, placeholder, batch_file):
 if __name__ == "__main__":
     write_batch_scripts(template="test_cp_batch_run.sh",
                         placeholder="PLACEHOLDER",
-batch_file="batch_out.txt")
+                        batch_file="batch_out.txt")
