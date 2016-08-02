@@ -1,7 +1,9 @@
+from __future__ import print_function
 import os
 import pandas as pd
 import colfuncs
 from sqlalchemy import create_engine
+from odo import odo
 
 class ResultsDirectory:
 
@@ -29,7 +31,8 @@ class ResultsDirectory:
 
     # create sqlite database
     def create_db(self, location, db_name="results"):
-        self.engine = create_engine("sqlite:///%s/%s.sqlite" % (location, db_name))
+        self.db_handle = "sqlite:///%s/%s.sqlite" % (location, db_name)
+        self.engine = create_engine(self.db_handle)
 
 
     # write csv files to database
@@ -42,22 +45,29 @@ class ResultsDirectory:
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
 
-        for x, _ in enumerate(file_paths):
-            f = file_paths[x]
-            tmp_file = pd.read_csv(f, header=header, chunksize=1000,
-                iterator=True)
-            all_file = pd.concat(tmp_file) # collect iterator
+        for x in file_paths:
 
-            # collapse column names if multi-indexed
-            if isinstance(all_file.columns, pd.core.index.MultiIndex):
-                all_file.columns = colfuncs.collapse_cols(all_file)
+            if header == 0:
+                # can use odo without collapsing (fast!)
+                print("importing :", x)
+                odo(x, self.db_handle+"::"+select)
+            else:
+                # have to collapse columns, means reading into pandas
+                print("importing :", x)
+                tmp_file = pd.read_csv(x, header=header, chunksize=1000,
+                    iterator=True)
+                all_file = pd.concat(tmp_file)
 
-            all_file.to_sql(select, con=self.engine,
-                flavor ="sqlite", index=False, if_exists="append")
+                # collapse column names if multi-indexed
+                if isinstance(all_file.columns, pd.core.index.MultiIndex):
+                    all_file.columns = colfuncs.collapse_cols(all_file)
 
+                all_file.to_sql(select, con=self.engine,
+                    flavor ="sqlite", index=False, if_exists="append")
 
 if __name__ == '__main__':
     x = ResultsDirectory("/home/scott/multi_index_test")
     x.create_db("/home/scott")
+    print(x.db_handle)
     x.to_db(select="DATA", header=[0,1])
     x.to_db(select="IMAGE", header=0)
