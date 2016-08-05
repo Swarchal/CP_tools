@@ -191,3 +191,27 @@ CellProfiler can combine the results of different objects into a single csv file
 ```python
 merger.to_db("DATA", header=[0,1])
 ```
+
+**Aggregating object-level data**
+
+As the default output from CellProfiler is cell-level data, whereby we have a row per object, it's normally convenient to aggregate this to image or well averages. We can do this automatically when appending the raw-data to the database with the method `to_db_agg()`, which produces a separate table in the database named *<object>_agg*, where object is the name of the .csv file containing the raw data.
+
+usage:
+
+```python
+x = ResultsDirectory("/data/results")
+
+x.create_db("/path/to/db/location")
+
+x.to_db_agg(select="DATA", header=[0,1], by="ImageNumber")
+```
+
+This will group the data by ImageNumber and create a row with a median value for each image.
+
+We can change the aggregation function by passing the `agg_func` argument.
+
+```python
+x.to_db_agg(select="DATA", header=[0,1], by="ImageNumber", agg_func="mean")
+```
+
+This will create a table called DATA_agg in the database, with a row per image.
