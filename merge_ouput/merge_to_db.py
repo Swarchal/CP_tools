@@ -59,6 +59,8 @@ class ResultsDirectory:
                 # collapse column names if multi-indexed
                 if isinstance(all_file.columns, pd.core.index.MultiIndex):
                     all_file.columns = colfuncs.collapse_cols(all_file)
+                else:
+                    TypeError("Multiple headers selected, yet dataframe is not multi-indexed")
                 all_file.to_sql(select, con=self.engine,
                     flavor="sqlite", index=False, if_exists="append")
 
