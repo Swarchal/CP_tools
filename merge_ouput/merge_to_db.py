@@ -7,13 +7,15 @@ from odo import odo
 
 class ResultsDirectory:
 
-
     """
     Directory containing the .csv from a CellProfiler run
     ------------------------------------------------------
     - create_db(): creates an sqlite database in the results directory
+        directory - string, top level directory containing cellprofiler output
     - to_db(): loads the csv files in the directory and writes them as
                tables to the sqlite database created by create_db()
+        select - string, name of .csv ouput file, and subsequent table in db
+        header - list, line numbers (0-indexed) of column headers
     """
 
     def __init__(self, directory):
