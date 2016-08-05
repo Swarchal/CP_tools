@@ -1,9 +1,15 @@
 from __future__ import print_function
 import os
 import pandas as pd
+import numpy as np
 import colfuncs
 from sqlalchemy import create_engine
 from odo import odo
+
+def check_agg_func(agg_func):
+    valid_agg_funcs = ["median", "mean"]
+    if agg_func not in valid_agg_funcs:
+        ValueError("Invalid agg_func, options are: 'median', 'mean'")
 
 class ResultsDirectory:
 
@@ -15,7 +21,8 @@ class ResultsDirectory:
     - to_db(): loads the csv files in the directory and writes them as
                tables to the sqlite database created by create_db()
         select - string, name of .csv ouput file, and subsequent table in db
-        header - list, line numbers (0-indexed) of column headers
+        header - int or list, line numbers (0-indexed) of column headers, if a
+                 a single header, then use 0 rather than [0].
     """
 
     def __init__(self, directory):
@@ -40,8 +47,9 @@ class ResultsDirectory:
     # write csv files to database
     def to_db(self, select="DATA", header=0):
         """
-        select: the name of the .csv file, this will also be the database table
-        header: the number of header rows.
+        select - string, the name of the .csv file, this will also be the
+                 database table
+        header - int or list, the number of header rows.
                 N.B. if not multi-indexed then use 0 rather than [0].
         """
         # filter files
@@ -67,8 +75,53 @@ class ResultsDirectory:
                     flavor="sqlite", index=False, if_exists="append")
 
 
+    def to_db_agg(self, select="DATA", header=0, by="ImageNumber",
+                  agg_func="median"):
+        """
+        select - string, the name of the .csv file, this will also be the
+                 prefix of the database table name.
+        header - int or list, the number of header rows.
+                 N.B if not multi-indxed, then use 0 rather than [0].
+        by - string, the column by which to group the data by.
+        """
+
+        check_agg_func(agg_func)
+
+        # filter files
+        file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
+
+        for x in file_paths:
+            if header == 0:
+                print("importing :", x)
+                # still have to load this into pandas, cannot use odo this time
+                tmp_file = pd.read_csv(x, header=header)
+                tmp_grouped = tmp_file.groupby(by, as_index=False)
+                if agg_func == "median":
+                    tmp_agg = tmp_grouped.aggregate(np.median)
+                elif agg_func == "mean":
+                    tmp_agg = tmp_grouped.aggregate(np.mean)
+                tmp_agg.to_sql(select+"_agg", con=self.engine, flavor="sqlite",
+                               index=False, if_exists="append")
+            else:
+                print("importing :", x)
+                tmp_file = pd.read_csv(x, header=header)
+                # collapse multi-indexed columns
+                if isinstance(tmp_file.columns, pd.core.index.MultiIndex):
+                    tmp_file.columns = colfuncs.collapse_cols(tmp_file)
+                else:
+                    TypeError("Multiple headers selected, yet dataframe is not multi-indexed")
+                tmp_grouped = tmp_file.groupby("Image_"+by, as_index=False)
+                if agg_func == "median":
+                    tmp_agg = tmp_grouped.aggregate(np.median)
+                elif agg_func == "mean":
+                    tmp_agg = tmp_grouped.aggregate(np.mean)
+                tmp_agg.to_sql(select+"_agg", con=self.engine, flavor="sqlite",
+                               index=False, if_exists="append")
+
+
+
 if __name__ == '__main__':
     x = ResultsDirectory("/mnt/datastore/scott/2016-07-13_SGC/raw_data")
-    x.create_db("/home/scott")
-    x.to_db(select="DATA", header=[0,1])
-    x.to_db(select="IMAGE", header=0)
+    x.create_db("/home/scott/agg_test")
+    x.to_db_agg(select="DATA", header=[0,1])
+    x.to_db_agg(select="IMAGE", header=0)
