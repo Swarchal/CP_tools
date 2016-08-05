@@ -18,6 +18,6 @@ def inflate_cols(df):
     return pd.MultiIndex.from_tuples(tuples)
 
 
-def collapse_cols(df, sep=" "):
+def collapse_cols(df, sep="_"):
     """Given a dataframe, will collapse multi-indexed columns names"""
     return [sep.join(col).strip() for col in df.columns.values]
