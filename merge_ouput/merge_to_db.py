@@ -4,9 +4,9 @@ import pandas as pd
 import numpy as np
 import colfuncs
 from sqlalchemy import create_engine
-from odo import odo
 
-def check_agg_func(agg_func):
+def _check_agg_func(agg_func):
+    """check if agg_func is a valid function"""
     valid_agg_funcs = ["median", "mean"]
     if agg_func not in valid_agg_funcs:
         ValueError("Invalid agg_func, options are: 'median', 'mean'")
@@ -59,7 +59,11 @@ class ResultsDirectory:
             if header == 0:
                 # can use odo without collapsing (fast!)
                 print("importing :", x)
-                odo(x, self.db_handle + "::" + select)
+                tmp_file = pd.read_csv(x, header=header, chunksize=10000,
+                        iterator=True)
+                all_file = pd.concat(tmp_file)
+                all_file.to_sql(select, con=self.engine, flavor="sqlite",
+                        index=False, if_exists="append")
             else:
                 # have to collapse columns, means reading into pandas
                 print("importing :", x)
@@ -85,7 +89,8 @@ class ResultsDirectory:
         by - string, the column by which to group the data by.
         """
 
-        check_agg_func(agg_func)
+        # check agg_func is a valid function
+        _check_agg_func(agg_func)
 
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
@@ -122,6 +127,7 @@ class ResultsDirectory:
 
 if __name__ == '__main__':
     x = ResultsDirectory("/mnt/datastore/scott/2016-07-13_SGC/raw_data")
-    x.create_db("/home/scott/agg_test")
+    x.create_db("/home/scott/2016-07-13_SGC/")
     x.to_db_agg(select="DATA", header=[0,1])
-    x.to_db_agg(select="IMAGE", header=0)
+    x.to_db(select="DATA", header=[0,1])
+    x.to_db(select="IMAGE", header=[0,1])
