@@ -57,7 +57,7 @@ class ResultsDirectory:
 
         for x in file_paths:
             if header == 0:
-                # can use odo without collapsing (fast!)
+                # dont need to collapse headers
                 print("importing :", x)
                 tmp_file = pd.read_csv(x, header=header, chunksize=10000,
                         iterator=True)
@@ -98,7 +98,6 @@ class ResultsDirectory:
         for x in file_paths:
             if header == 0:
                 print("importing :", x)
-                # still have to load this into pandas, cannot use odo this time
                 tmp_file = pd.read_csv(x, header=header)
                 tmp_grouped = tmp_file.groupby(by, as_index=False)
                 if agg_func == "median":
