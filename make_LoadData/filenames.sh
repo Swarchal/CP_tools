@@ -52,7 +52,6 @@ if [ ! -z "$2" ];
         fi
 
         echo "   - Metadata argument passed"
-        exit 1 # not done this yet
         python src/add_metadata.py metadata_file "$2"
 fi
 
