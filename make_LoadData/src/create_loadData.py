@@ -35,4 +35,4 @@ per channel number.
 """
 
 # write long format to csv to reshape in R
-df.to_csv("tmp/py_load_long.csv")
+df.to_csv("tmp/py_load_long.csv", index_label=False)

@@ -14,15 +14,15 @@ def get_filepaths(directory):
     for root, directories, files in os.walk(directory):
         for filename in files:
             filepath = os.path.join(root, filename)
-            file_paths.append(filepath)
+            if filepath.endswith("DATA.csv"):
+                file_paths.append(filepath)
 
     return file_paths
 
-# Run the above function and store its results in a variable.
 files = get_filepaths(my_path)
 
 # N.B header=[0,1] is assuming we have multi-indexed columns from cellprofiler
-df = pd.concat((pd.read_csv(f, header=[0,1]) for f in files if f.endswith(".csv")))
+df = pd.concat((pd.read_csv(f, header=[0,1]) for f in files))
 
 # if given an ouput location, else save in cwd
 if len(sys.argv) == 3:

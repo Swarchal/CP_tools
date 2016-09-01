@@ -1,0 +1,9 @@
+All .csv files should have the same columns and column positions.
+So should be able to strip the first two lines from each file and use cat
+to merge them all together.
+
+Might need to use find -f and grep to select only the DATA.csv files, and then
+loop through those files using head or tail to remove the first two lines and
+send all output to append to a single file. Then add the first two lines of 
+columns names to the beginning of the file. This might not even require loading
+the entire dataset into memory at once.

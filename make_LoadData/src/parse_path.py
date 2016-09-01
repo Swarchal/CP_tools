@@ -4,7 +4,7 @@ import os
 
 """
 Functions for extracting data from file paths produced by
-the ImagXpress.
+the ImageXpress.
 
 NOTE:
      These functions will not work if the plate name contains an underscore
@@ -124,7 +124,3 @@ def get_metadata_channel(x, char="_"):
         ch = int(line.split(char)[3][1])
         channels.append(ch)
     return channels
-
-
-if __name__ == "__main__":
-    print get_metadata_well("out_test.txt")
