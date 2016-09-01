@@ -25,6 +25,17 @@ cd ~/CP_tools/make_LoadData
 
 This generates a .csv file suitable for LoadData and automatically extracts metadata such as plate name, well name, site and channel number. The generated image list is saved in the `make_LoadData/` directory.
 
+## adding metadata:
+
+Passing an additional metadata .csv file to `./filenames.sh` will merge metadata to the appropriate well and plate labels
+
+```bash
+./filenames.sh /path/to/folder metadata_file.csv
+```
+
+The metadata file should contain well labels under the columns `Metadata_well` and optionally, a column of `Metadata_platename`.
+
+
 ### 3. Generate submission commands
 
 Whilst we can pass this image list to cellprofiler, it will analyse the images serially and take a long time. Ideally we want to run this in parallel, so we use `batch_LoadData` to split this image list up into equal sized chunks and farm these out to a computing cluster.
