@@ -7,6 +7,13 @@ if [ $# -eq 0 ]
         exit 1
 fi
 
+# check optional metadata argument before creating file-list (slow)
+if [ ! -z "$2" ] && [ ! -f "$2" ];
+    then
+        echo "ERROR: $2 does not exist"
+        exit 1
+fi
+
 # create list of filenames and store in a temporary file
 echo " |█    | Creating file-list"
 # check the directory exists
@@ -30,20 +37,9 @@ Rscript src/reshape.R
 
 echo " |████ | Merging any external metadata"
 if [ ! -z "$2" ];
-    # if there is a second argument
     then
-        if [ ! -f "$2" ]
-            # check the external metadata file exists
-            then
-                # if not, then clean-up and exit
-                echo "ERROR: $2 is not a valid file"
-                rm tmp/filenames.txt
-                exit 1
-            else
-                # if file is good, then pass to python script
-                echo "  - Metadata argument passed"
-                python src/add_metadata.py "$2"
-        fi
+        echo "  - Metadata argument passed"
+        python src/add_metadata.py "$2"
 fi
 
 echo " |█████| Removing temporary files"

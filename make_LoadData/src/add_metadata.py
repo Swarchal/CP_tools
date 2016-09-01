@@ -12,9 +12,11 @@ All other columns labelled Metadata_
 well be added to the file-list
 """
 
+# note argv[1] in this case, as we are only passing the second argument to this
+# python script
 metadata_file = argv[1]
 # load the external metadata
-metadata = pd.read_csv(metadata_file)
+metadata = pd.read_csv(str(metadata_file))
 # load the reshaped file list
 file_list = pd.read_csv("load_data_input.csv")
 
@@ -25,10 +27,12 @@ if len(metadata_cols) < len(metadata.columns):
                   " and have not been merged")
 
 if "Metadata_platename" in metadata_cols:
+    # if we have metadata plate in the metadata file
+    # then merge using well and plate
     df_merged = file_list.merge(metadata, on=["Metadata_well",
                                               "Metadata_platename"])
 else:
+    # otherwise, just merge by well
     df_merged = file_list.merge(metadata, on="Metadata_well")
 
-
-df_merged.to_csv("load_data_input.csv")
+df_merged.to_csv("load_data_input.csv", index_label=False)
