@@ -25,7 +25,7 @@ cd ~/CP_tools/make_LoadData
 
 This generates a .csv file suitable for LoadData and automatically extracts metadata such as plate name, well name, site and channel number. The generated image list is saved in the `make_LoadData/` directory.
 
-## adding metadata:
+#### adding metadata:
 
 Passing an additional metadata .csv file to `./filenames.sh` will merge metadata to the appropriate well and plate labels
 
