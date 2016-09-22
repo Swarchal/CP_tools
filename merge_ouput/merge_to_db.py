@@ -45,12 +45,13 @@ class ResultsDirectory:
 
 
     # write csv files to database
-    def to_db(self, select="DATA", header=0):
+    def to_db(self, select="DATA", header=0, **kwargs):
         """
         select - string, the name of the .csv file, this will also be the
                  database table
         header - int or list, the number of header rows.
                 N.B. if not multi-indexed then use 0 rather than [0].
+        **kwargs - additional arguments to pandas.read_csv
         """
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
@@ -60,7 +61,7 @@ class ResultsDirectory:
                 # dont need to collapse headers
                 print("importing :", x)
                 tmp_file = pd.read_csv(x, header=header, chunksize=10000,
-                        iterator=True)
+                        iterator=True, **kwargs)
                 all_file = pd.concat(tmp_file)
                 all_file.to_sql(select, con=self.engine, flavor="sqlite",
                         index=False, if_exists="append")
@@ -68,7 +69,7 @@ class ResultsDirectory:
                 # have to collapse columns, means reading into pandas
                 print("importing :", x)
                 tmp_file = pd.read_csv(x, header=header, chunksize=10000,
-                    iterator=True)
+                    iterator=True, **kwargs)
                 all_file = pd.concat(tmp_file)
                 # collapse column names if multi-indexed
                 if isinstance(all_file.columns, pd.core.index.MultiIndex):
@@ -80,13 +81,14 @@ class ResultsDirectory:
 
 
     def to_db_agg(self, select="DATA", header=0, by="ImageNumber",
-                  agg_func="median"):
+                  agg_func="median", **kwargs):
         """
         select - string, the name of the .csv file, this will also be the
                  prefix of the database table name.
         header - int or list, the number of header rows.
                  N.B if not multi-indxed, then use 0 rather than [0].
         by - string, the column by which to group the data by.
+        **kwargs - additional arguments to pandas.read_csv
         """
 
         # check agg_func is a valid function
@@ -98,7 +100,7 @@ class ResultsDirectory:
         for x in file_paths:
             if header == 0:
                 print("importing :", x)
-                tmp_file = pd.read_csv(x, header=header)
+                tmp_file = pd.read_csv(x, header=header, **kwargs)
                 tmp_grouped = tmp_file.groupby(by, as_index=False)
                 if agg_func == "median":
                     tmp_agg = tmp_grouped.aggregate(np.median)
@@ -108,7 +110,7 @@ class ResultsDirectory:
                                index=False, if_exists="append")
             else:
                 print("importing :", x)
-                tmp_file = pd.read_csv(x, header=header)
+                tmp_file = pd.read_csv(x, header=header, **kwargs)
                 # collapse multi-indexed columns
                 if isinstance(tmp_file.columns, pd.core.index.MultiIndex):
                     tmp_file.columns = colfuncs.collapse_cols(tmp_file)
