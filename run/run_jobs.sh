@@ -24,7 +24,7 @@ ls "$1" > .jobs_to_run.txt
 # run all submission scripts
 while read job; do
     qsub $job
-done < jobs_to_run.txt
+done < .jobs_to_run.txt
 
 # tidy up afterwards
 rm .jobs_to_run.txt
