@@ -4,7 +4,7 @@ library(reshape2)
 
 df <- read.csv("tmp/py_load_long.csv")
 
-out <- dcast(df, path + Metadata_well + Metadata_site + Metadata_platename ~ Metadata_channel,
+out <- dcast(df, path + Metadata_well + Metadata_site + Metadata_platename + Metadata_platenum ~ Metadata_channel,
              value.var = "URL")
 
 # rename column path to Metadata_path

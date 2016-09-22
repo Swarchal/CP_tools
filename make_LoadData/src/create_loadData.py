@@ -11,7 +11,7 @@ text = "tmp/filenames.txt"
 
 
 colnames = ["URL", "path", "Metadata_platename", "Metadata_well",
-            "Metadata_site", "Metadata_channel"]
+            "Metadata_site", "Metadata_channel", "Metadata_platenum"]
 
 # sanity check filenames
 with open(text) as f:
@@ -24,7 +24,8 @@ df = pd.DataFrame(
                       pp.get_platename(text),
                       pp.get_metadata_well(text),
                       pp.get_metadata_site(text),
-                      pp.get_metadata_channel(text))
+                      pp.get_metadata_channel(text),
+                      pp.get_platenum(text))
 )
 
 df.columns = colnames
