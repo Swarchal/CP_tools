@@ -56,6 +56,10 @@ class ResultsDirectory:
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
 
+        # check there are files matching select argument
+        if len(file_paths) == 0:
+            raise ValueError("No files found matching '{}'".format(select))
+
         for x in file_paths:
             if header == 0:
                 # dont need to collapse headers
@@ -96,6 +100,10 @@ class ResultsDirectory:
 
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
+
+        # check there are files matching select argument
+        if len(file_paths) == 0:
+            raise ValueError("No files found matching '{}'".format(select))
 
         for x in file_paths:
             if header == 0:
