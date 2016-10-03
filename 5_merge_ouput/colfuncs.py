@@ -4,17 +4,13 @@ def inflate_cols(df):
     return a pandas DataFrame index. that can be used like so:
         df.columns = inflate_columns(df)
     """
-    header_1 = []
-    header_2 = []
-
+    header_1, header_2 = [], []
     for colname in df.columns:
         x = colname.split()
         header_1.append(x[0])
         header_2.append(x[1])
-
     assert len(header_1) == len(header_2)
     tuples = zip(header_1, header_2)
-
     return pd.MultiIndex.from_tuples(tuples)
 
 
