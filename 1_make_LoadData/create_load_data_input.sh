@@ -32,7 +32,6 @@ else
         platename=${platename_with_file##*/}
         # extract metadata from image headings
         python src/indv/create_loadData.py "${D}" "$1"load_data_"$platename".csv
-        echo "$1"load_data_"$platename".csv
     done
 fi
 
