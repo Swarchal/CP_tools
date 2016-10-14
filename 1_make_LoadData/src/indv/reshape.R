@@ -1,8 +1,16 @@
+#!/usr/bin/env Rscript
+
+argv <- commandArgs(trailingOnly = TRUE)
+
+if (length(argv) != 2) {
+    stop("need to supply two arguments")
+}
+
 # TODO re-write this in python
 
 library(reshape2)
 
-df <- read.csv("tmp/py_load_long.csv")
+df <- read.csv(argv[1])
 
 out <- dcast(df, path + Metadata_well + Metadata_site + Metadata_platename + Metadata_platenum ~ Metadata_channel,
              value.var = "URL")
@@ -37,4 +45,4 @@ for (col_name in pathnames) {
 
 out[["Metadata_path"]] <- NULL
 
-write.csv(out, "load_data_input.csv", row.names = FALSE)
+write.csv(out, argv[2], row.names = FALSE)
