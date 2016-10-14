@@ -34,3 +34,4 @@ else
         Rscript src/indv/reshape.R "${f}" "$1"
 fi
 
+exit 0
