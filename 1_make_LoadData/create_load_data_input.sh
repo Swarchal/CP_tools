@@ -12,8 +12,16 @@
 # should only read in files with .filelist extension
 # as we may have other files in the same directory
 
+# check user has passed at least one argument
+if [ $# -eq 0 ]
+then
+    echo "ERROR: no arguments supplied"
+    exit 1
+fi
+
+
 # capture directory from stdin
-while read line;
+while read line
 do
     var="${line}"
 done < /dev/stdin
