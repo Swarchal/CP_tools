@@ -52,7 +52,7 @@ if [ ! -z "$2" ]
 then
     echo "$2"
 else
-    echo "$PWD/tmp"
+    echo "$PWD/tmp/"
 fi
 
 exit 0
