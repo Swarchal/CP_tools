@@ -19,13 +19,13 @@ with open(text) as f:
     pp.check_filename(filenames)
 
 df = pd.DataFrame(
-                  zip(filenames,
-                      pp.get_path(text),
-                      pp.get_platename(text),
-                      pp.get_metadata_well(text),
-                      pp.get_metadata_site(text),
-                      pp.get_metadata_channel(text),
-                      pp.get_platenum(text))
+  zip(filenames,
+      pp.get_path(text),
+      pp.get_platename(text),
+      pp.get_metadata_well(text),
+      pp.get_metadata_site(text),
+      pp.get_metadata_channel(text),
+      pp.get_platenum(text))
 )
 
 df.columns = colnames
@@ -36,4 +36,4 @@ per channel number.
 """
 
 # write long format to csv to reshape in R
-df.to_csv("tmp/py_load_long.csv", index_label=False)
+df.to_csv("tmp/py_load_long.csv", index=False)
