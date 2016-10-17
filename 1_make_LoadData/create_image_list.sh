@@ -15,6 +15,27 @@ then
 fi
 
 
+# if no second argument has been passed, then save to tmp
+if [ ! -z "$2"]
+then
+    output=$2
+else
+    output="$PWD/tmp"
+fi
+
+
+create_load_data() {
+    if [ -d "${D}" ]
+    then
+        # get final platename from the filepath to prefix
+        # the $_filenames.txt
+        platename=$(echo "${D}" | sed "s/.*\///")
+        find "${D}" -type f | grep -v "thumb\|.db" > \
+        "$output"/"$platename".filelist
+    fi
+}
+
+
 # check the directory exists
 if [ ! -d "$1" ]
 # if directory does not exist
@@ -23,36 +44,14 @@ then
     exit 1
 else
     # for every subdirectory in directory parent directory
-    # find files that do not contain "thumb" or ".db"
     for D in "$1"*;
-    do
-        if [ -d "${D}" ]
-        then
-            # get final platename from the filepath to prefix
-            # the $_filenames.txt
-            platename=$(echo "${D}" | sed "s/.*\///")
-            if [ ! -z "$2" ]
-            then
-                # if second argument has been passed
-                # save to the argument location
-                find "${D}" -type f | grep -v "thumb\|.db" > \
-                "$2"/"$platename".filelist
-            else
-                # save to ./tmp/
-                find "${D}" -type f | grep -v "thumb\|.db" > \
-                tmp/"$platename".filelist
-            fi
-        fi
-    done
+    do create_load_data "${D}" "$output" & done
 fi
+
+wait ${!}
 
 # return directory location of image_lists
 # so we can pipe to next function that takes this as an argument
-if [ ! -z "$2" ]
-then
-    echo "$2"
-else
-    echo "$PWD/tmp/"
-fi
+echo $output
 
 exit 0
