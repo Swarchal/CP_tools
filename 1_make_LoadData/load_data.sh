@@ -20,6 +20,16 @@ then
 fi
 
 
+
+create_load_data() {
+    # get platename between last slash and dot
+    platename_with_file=${D%.*}
+    platename=${platename_with_file##*/}
+    # extract metadata from image headings
+    python src/indv/create_loadData.py "${D}" "$2"/"$platename".load_data.csv
+}
+
+
 # capture directory from stdin
 while read line
 do
@@ -34,14 +44,12 @@ then
 else
     # loop through image-list files and call create_loadData on each
     for D in "$var"*.filelist
-    do
-        # get platename between last slash and dot
-        platename_with_file=${D%.*}
-        platename=${platename_with_file##*/}
-        # extract metadata from image headings
-        python src/indv/create_loadData.py "${D}" "$1"/"$platename".load_data.csv
-    done
-    echo "$1"
+    do create_load_data "${D}" "$1" & done
 fi
+
+echo "$1"
+
+# wait 'till last background process has finished before exiting
+wait ${!}
 
 exit 0
