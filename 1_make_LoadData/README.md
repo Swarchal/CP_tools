@@ -17,3 +17,15 @@ Passing an additional metadata .csv file to `./filenames.sh` will merge metadata
 ```
 
 The metadata file should contain well labels under the columns `Metadata_well` and optionally, a column of `Metadata_platename`.
+
+
+## Creating a LoadData file for each plate
+```bash
+./create_image_list.sh /path/to/ImageXpress/plates | \
+    ./load_data.sh /path/to/save/location | \
+    ./reshape.sh /path/to/save/location
+```
+
+This will create a csv for load data for every plate in the `path/to/ImageXpress/plates` directory.
+
+This is useful for screens containing a large number of plates, and easily re-running analyses for certain plates.

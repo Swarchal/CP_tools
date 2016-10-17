@@ -14,6 +14,8 @@ Geared towards ImageXpress file directories and SGE job submissions.
 
 Create a cellprofiler pipeline with a LoadData module at the beginning that takes a .csv file from `default input` or `elsewhere`. At the end of the pipeline have a ExportToSpreadsheet module, that saves the output at `default output` location. This output location can then be specified on the command line by the `-o` option.
 
+---------------------
+
 ### 2. Generate input for LoadData
 
 Create a file list suitable for LoadData using `make_LoadData`, by `cd`'ing to the directory containing `filesnames.sh` and passing an argument containing the top directory of images you want to analyse. e.g
@@ -35,6 +37,19 @@ Passing an additional metadata .csv file to `./filenames.sh` will merge metadata
 
 The metadata file should contain well labels under the columns `Metadata_well` and optionally, a column of `Metadata_platename`.
 
+
+#### Creating a LoadData file for each plate
+```bash
+./create_image_list.sh /path/to/ImageXpress/plates | \
+    ./load_data.sh /path/to/save/location | \
+    ./reshape.sh /path/to/save/location
+```
+
+This will create a csv for load data for every plate in the `path/to/ImageXpress/plates` directory.
+
+This is useful for screens containing a large number of plates, and easily re-running analyses for certain plates.
+
+-----------------------------
 
 ### 3. Generate submission commands
 
@@ -68,6 +83,8 @@ create_batch_list(file_list="~/data/load_data_input.csv"
                   chunk_size=30,
                   output_prefix="/scratch/project_1_output_")
 ```
+
+-----------------------------
 
 ### 4. Creating submission scripts
 
@@ -129,6 +146,8 @@ cellprofiler -r -c -p ~/data/project_1.cppipe --data-file=~/data/load_data_input
 
 Note that this also works with the built in `--get-batch-commands` output.
 
+--------------------------------
+
 ### 5. Submitting the jobs to the cluster
 
 This can be done with a bash loop, so if we have 200 out files we want to run.
@@ -136,6 +155,8 @@ This can be done with a bash loop, so if we have 200 out files we want to run.
 ```sh
 for i in {0..199}; do qsub out_$i; done
 ```
+
+----------------------------------
 
 ### 6. Merging the output
 
