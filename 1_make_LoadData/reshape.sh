@@ -22,6 +22,15 @@ do
 done < /dev/stdin
 
 
+# function to reshape load_data csv files
+reshape() {
+    # get the platename between last slash and dot
+    platename_with_ext=${D%.*}
+    platename=${platename_with_ext##*/}
+    Rscript src/indv/reshape.R "${D}" "$2"/"$platename".csv
+}
+
+
 # check if we have a valid directory
 if [ ! -d "$var" ]
 then
@@ -30,12 +39,10 @@ then
 else
     # for csv file in the directory
     for D in "$var"*".load_data.csv"
-    do
-        # get the platename between last slash and dot
-        platename_with_ext=${D%.*}
-        platename=${platename_with_ext##*/}
-        Rscript src/indv/reshape.R "${D}" "$1"/"$platename".csv
-    done
+    do reshape "${D}" "$1" & done
 fi
+
+# wait until last background process has finished before exiting
+wait ${!}
 
 exit 0
