@@ -44,7 +44,7 @@ then
     exit 1
 else
     # for every subdirectory in directory parent directory
-    for D in "$1"*;
+    for D in "$1"*
     do create_load_data "${D}" "$output" & done
 fi
 

@@ -12,8 +12,8 @@ library(reshape2)
 
 df <- read.csv(argv[1])
 
-out <- dcast(df, path + Metadata_well + Metadata_site + Metadata_platename + Metadata_platenum ~ Metadata_channel,
-             value.var = "URL")
+out <- dcast(df, path + Metadata_well + Metadata_site + Metadata_platename +
+             Metadata_platenum ~ Metadata_channel, value.var = "URL")
 
 # rename column path to Metadata_path
 colnames(out)[grep("path", colnames(out))] <- "Metadata_path"
