@@ -39,7 +39,9 @@ then
 else
     # for csv file in the directory
     for D in "$var"*".load_data.csv"
-    do reshape "${D}" "$1" & done
+    do
+        reshape "${D}" "$1" &
+    done
 fi
 
 # wait until last background process has finished before exiting

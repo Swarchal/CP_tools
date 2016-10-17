@@ -20,19 +20,16 @@ if [ ! -z "$2"]
 then
     output=$2
 else
-    output="$PWD/tmp"
+    output="$PWD/tmp/"
 fi
 
 
 create_load_data() {
-    if [ -d "${D}" ]
-    then
-        # get final platename from the filepath to prefix
-        # the $_filenames.txt
-        platename=$(echo "${D}" | sed "s/.*\///")
-        find "${D}" -type f | grep -v "thumb\|.db" > \
-        "$output"/"$platename".filelist
-    fi
+    # get final platename from the filepath to prefix
+    # the $_filenames.txt
+    platename=$(echo "${D}" | sed "s/.*\///")
+    find "${D}" -type f | grep -v "thumb\|.db" > \
+    "$output"/"$platename".filelist
 }
 
 
@@ -45,7 +42,9 @@ then
 else
     # for every subdirectory in directory parent directory
     for D in "$1"*
-    do create_load_data "${D}" "$output" & done
+    do
+        create_load_data "${D}" "$output" &
+    done
 fi
 
 wait ${!}

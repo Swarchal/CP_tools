@@ -44,7 +44,9 @@ then
 else
     # loop through image-list files and call create_loadData on each
     for D in "$var"*.filelist
-    do create_load_data "${D}" "$1" & done
+    do
+        create_load_data "${D}" "$1" &
+    done
 fi
 
 echo "$1"
