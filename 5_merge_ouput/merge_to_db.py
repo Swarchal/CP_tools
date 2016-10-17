@@ -10,14 +10,17 @@ class ResultsDirectory:
 
     """
     Directory containing the .csv from a CellProfiler run
-    ------------------------------------------------------
-    - create_db(): creates an sqlite database in the results directory
+    
+    Methods
+    -------
+    create_db :
+        creates an sqlite database in the results directory
         directory - string, top level directory containing cellprofiler output
-    - to_db(): loads the csv files in the directory and writes them as
-               tables to the sqlite database created by create_db()
-        select - string, name of .csv ouput file, and subsequent table in db
-        header - int or list, line numbers (0-indexed) of column headers, if a
-                 a single header, then use 0 rather than [0].
+    to_db :
+        loads the csv files in the directory and writes them as tables to the
+        sqlite database created by create_db
+    to_db_agg :
+        like to_db, but aggregates the data on a specified column
     """
 
     def __init__(self, directory):
@@ -41,11 +44,13 @@ class ResultsDirectory:
     # write csv files to database
     def to_db(self, select="DATA", header=0, **kwargs):
         """
-        select - string, the name of the .csv file, this will also be the
-                 database table
-        header - int or list, the number of header rows.
-                N.B. if not multi-indexed then use 0 rather than [0].
-        **kwargs - additional arguments to pandas.read_csv
+        Parameters
+        -----------
+        select : string
+            the name of the .csv file, this will also be the database table
+        header : int or list
+            the number of header rows.
+        **kwargs : additional arguments to pandas.read_csv
         """
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
@@ -80,12 +85,18 @@ class ResultsDirectory:
     def to_db_agg(self, select="DATA", header=0, by="ImageNumber",
                   method="median", **kwargs):
         """
-        select - string, the name of the .csv file, this will also be the
-                 prefix of the database table name.
-        header - int or list, the number of header rows.
-                 N.B if not multi-indxed, then use 0 rather than [0].
-        by - string, the column by which to group the data by.
-        **kwargs - additional arguments to pandas.read_csv and aggregate
+        Parameters
+        -----------
+        select : string
+            the name of the .csv file, this will also be the prefix of the
+            database table name.
+        header : int or list
+            the number of header rows. 
+        by : string
+            the column by which to group the data by.
+        method : string (default="median")
+            method by which to average groups, median or mean
+        **kwargs : additional arguments to pandas.read_csv and aggregate
         """
         # filter files
         file_paths = [f for f in self.file_paths if f.endswith(select+".csv")]
@@ -192,13 +203,10 @@ def _get_featuredata(data, metadata_string="Metadata", prefix=True):
 
     Parameters
     ----------
-
     data : pandas DataFrame
         DataFrame
-
     metadata_string : string (default="Metadata")
         string that denotes a column is a metadata column
-
     prefix: boolean (default=True)
         if True, then only columns that are prefixed with metadata_string are
         selected as metadata. If False, then any columns that contain the
