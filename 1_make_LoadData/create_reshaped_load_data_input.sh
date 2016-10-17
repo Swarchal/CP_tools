@@ -29,9 +29,13 @@ then
     exit 1
 else
     # for csv file in the directory
-    for f in "$var"*.csv
+    for D in "$var"*".pre_load_data.csv"
     do
-        Rscript src/indv/reshape.R "${f}" "$1"
+        # get the platename between last slash and dot
+        platename_with_ext=${D%.*}
+        platename=${platename_with_ext##*/}
+        Rscript src/indv/reshape.R "${D}" "$1"/"$platename".csv
+    done
 fi
 
 exit 0
