@@ -40,12 +40,10 @@ The metadata file should contain well labels under the columns `Metadata_well` a
 
 #### Creating a LoadData file for each plate
 ```bash
-./create_image_list.sh /path/to/ImageXpress/plates | \
-    ./load_data.sh /path/to/save/location | \
-    ./reshape.sh /path/to/save/location
+./create_load_data.sh /path/to/plates /path/to/save
 ```
 
-This will create a csv for load data for every plate in the `path/to/ImageXpress/plates` directory.
+This will create a csv for load data for every plate in the `path/to/plates` directory.
 
 This is useful for screens containing a large number of plates, and easily re-running analyses for certain plates.
 
