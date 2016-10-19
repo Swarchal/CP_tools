@@ -6,11 +6,14 @@
 
 
 # check inputs
-if [ $# -eq 0 ]; then
+if [ $# -eq 0 ]
+then
     echo "ERROR: No arguments supplied"
     exit 1
 fi
-if [ ! -d "$1" ]; then
+
+if [ ! -d "$1" ]
+then
     echo "ERROR: $1 is not a valid directory"
     exit 1
 fi
@@ -22,7 +25,8 @@ cd "$1"
 ls "$1" > .jobs_to_run.txt
 
 # run all submission scripts
-while read job; do
+while read job
+do
     qsub $job
 done < .jobs_to_run.txt
 
