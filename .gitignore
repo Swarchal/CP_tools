@@ -2,3 +2,4 @@
 *.filelist
 *.csv
 tmp/*
+*.sqlite
