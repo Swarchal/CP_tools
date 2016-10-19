@@ -6,6 +6,9 @@ then
     exit 1
 fi
 
+# clear tmp directory
+rm ./tmp/*
+
 ./create_image_list.sh "$1" | \
 ./load_data.sh "$2" | \
 ./reshape.sh "$2"
