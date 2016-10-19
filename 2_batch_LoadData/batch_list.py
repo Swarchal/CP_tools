@@ -13,7 +13,7 @@ parser.add_argument("-o", "--prefix")
 parser.add_argument("-q", "--full_path")
 
 parser.set_defaults(chunk_size=int(20),
-                    prefix="output",
+                    prefix=None,
                     full_path=True)
 
 args = parser.parse_args()
@@ -21,7 +21,7 @@ args = parser.parse_args()
 out = create_batch_list.create_batch_list(file_list=str(args.file_list),
                                           pipeline=str(args.pipeline),
                                           chunk_size=int(args.chunk_size),
-                                          output_prefix=str(args.prefix),
+                                          output_prefix=args.prefix,
                                           full_path=bool(args.full_path))
 
 print(*out, sep="\n")
