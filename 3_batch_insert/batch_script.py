@@ -6,13 +6,11 @@ import batch_insert
 
 
 parser = argparse.ArgumentParser(description="create submission scripts")
-parser.add_argument("-t", "--template")
+parser.add_argument("-t", "--template", required=True)
 parser.add_argument("-p", "--placeholder")
 parser.add_argument("-f", "--batch_file")
 
-parser.set_defaults(template="test_cp_batch_run.sh",
-                    placeholder="PLACEHOLDER",
-                    batch_file="batch_out.txt")
+parser.set_defaults(placeholder="PLACEHOLDER")
 
 args=parser.parse_args()
 
