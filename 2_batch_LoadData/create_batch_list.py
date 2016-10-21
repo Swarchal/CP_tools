@@ -45,7 +45,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
     output = []
     for i, val in enumerate(range(0, n_chunks), 1):
         if i < n_chunks:
-            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}{}".format(
+            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}_{}".format(
                 pipeline,
                 file_list,
                 ((i-1) * chunk_size) + 1,
@@ -54,7 +54,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
                 i
             )
         else:
-            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}{}".format(
+            x = "cellprofiler -r -c -p {} --data-file={} -f {} -l {} -o {}_{}".format(
                 pipeline,
                 file_list,
                 ((i-1) * chunk_size) + 1,
