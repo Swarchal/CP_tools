@@ -1,6 +1,9 @@
 #! /bin/env python
 
-def write_batch_scripts(template, placeholder, batch_file, prefix=None):
+import os
+
+def write_batch_scripts(template, placeholder, batch_file, prefix=None,
+                        location=""):
 
     """
     converts a template qub submission script and a batch output file produced
@@ -25,7 +28,7 @@ def write_batch_scripts(template, placeholder, batch_file, prefix=None):
 
     for i, cmd in enumerate(inputs, 1):
         out = tmp.replace(placeholder, cmd)
-        outfile = open(str(names[i]), "w")
+        outfile = open(os.path.join(location, str(names[i])), "w")
         outfile.write(out)
 # TODO test this!!
 
