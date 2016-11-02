@@ -35,9 +35,9 @@ do
 done
 
 # make submission scripts directory if it doesn't exist
-if [ ! -d submission_scripts ]
+if [ ! -d file_lists ]
 then
-    mkdir submission_scripts
+    mkdir file_lists
 fi
 
 if [ ! -d batch_commands ]
@@ -45,24 +45,32 @@ then
     mkdir batch_commands
 fi
 
+if [ ! -d submission_scripts ]
+then
+    mkdir submission_scripts
+fi
+
 ###############################################################################
 # 1 CREATE FILE LISTS
 ###############################################################################
 
+# get full path of file_lists directory
+cd file_list
+file_lists_loc="${pwd}"
+
 cd 1_make_LoadData
 
-# store file-lists contained in tmp
-ls tmp > ../.file_lists.txt
+./create_load_data.sh "$IMG_LOC" "${file_lists_loc}"
+
+# create list of file_lists
+cd ../file_lists
+ls > ../.file-list.txt
 
 ###############################################################################
 # 2 CREATE LOADDATA FILES
 ###############################################################################
 
-# get path location of tmp file
-cd tmp
-tmp_loc=${pwd}
-
-cd ../../2_batch_LoadData
+cd ../2_batch_LoadData
 
 while read f
 do
