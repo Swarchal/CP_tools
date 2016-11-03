@@ -43,7 +43,7 @@ else
     # for every subdirectory in directory parent directory
     for D in "$1"*
     do
-        create_load_data "${D}" "$output" &
+        create_load_data "${D}" "$output"
     done
 fi
 

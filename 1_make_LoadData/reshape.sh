@@ -38,7 +38,7 @@ then
     exit 1
 else
     # for csv file in the directory
-    for D in "$var"*".load_data.csv"
+    for D in "$var"///*".load_data.csv"
     do
         reshape "${D}" "$1" &
     done
