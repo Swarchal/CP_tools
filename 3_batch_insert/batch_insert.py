@@ -24,13 +24,14 @@ def write_batch_scripts(template, placeholder, batch_file, prefix=None,
     if prefix == None:
         # determine prefix from batch_file input
         spacer = [" "]
-        names = spacer + [i.split()[-1] for i in inputs]
+        names = spacer + [i.split(os.sep)[-1] for i in inputs]
 
     for i, cmd in enumerate(inputs, 1):
         out = tmp.replace(placeholder, cmd)
-        outfile = open(os.path.join(location, str(names[i])), "w")
+        path = os.path.join(location, str(names[i]))
+        outfile = open(path, "w")
         outfile.write(out)
-# TODO test this!!
+
 
 if __name__ == "__main__":
     write_batch_scripts(template="test_cp_batch_run.sh",
