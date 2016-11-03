@@ -9,7 +9,8 @@ def count_lines(fname):
 
 
 def create_batch_list(file_list, pipeline, n_chunks=None,
-                      output_prefix=None, full_path=True, chunk_size=20):
+                      output_prefix=None, full_path=True, chunk_size=20,
+                      path_prefix=""):
     """
     Create a list of cellprofiler commands for batch analysis from a filelist
     and a pipeline.
@@ -50,7 +51,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
                 file_list,
                 ((i-1) * chunk_size) + 1,
                 chunk_size * i,
-                output_prefix,
+                os.path.join(path_prefix, output_prefix),
                 i
             )
         else:
@@ -59,7 +60,7 @@ def create_batch_list(file_list, pipeline, n_chunks=None,
                 file_list,
                 ((i-1) * chunk_size) + 1,
                 chunk_size * i + remainder,
-                output_prefix,
+                os.path.join(path_prefix, output_prefix),
                 i
             )
         output.append(x)
