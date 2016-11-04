@@ -73,6 +73,7 @@ then
     if [ ! -d submission_scripts ]
     then
         echo "ERROR failed to create submission scripts directory"
+	exit 1
     fi
 fi
 
