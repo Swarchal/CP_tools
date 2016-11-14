@@ -28,8 +28,7 @@ create_load_data() {
     # get final platename from the filepath to prefix
     # the $_filenames.txt
     platename=$(echo "${D}" | sed "s/.*\///")
-    find "${D}" -type f | grep -v "thumb\|.db" > \
-    "$output"/"$platename".filelist
+    find "${D}" -type f | grep -v "thumb\|.db" > "$output"/"$platename".filelist
 }
 
 
@@ -41,7 +40,7 @@ then
     exit 1
 else
     # for every subdirectory in directory parent directory
-    for D in "$1"*
+    for D in "$1"/*
     do
         create_load_data "${D}" "$output"
     done
