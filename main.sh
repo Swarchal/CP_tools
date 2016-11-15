@@ -17,7 +17,7 @@
 # Arguments:
 # -----------
 #   -f : directory containing plates in the ImageXpress file directory that
-#        can be accessed by the cluster.
+#        can be accessed by the cluster. NOTE need an absolute file path
 #   -s : path to user's scratch space
 #   -p : path to cellprofiler pipeline beginning with a LoadData module
 ###############################################################################
@@ -83,6 +83,7 @@ fi
 ###############################################################################
 
 # get full path of file_lists directory
+# NOTE this means that we need an absolute file path
 cd file_lists
 file_lists_loc="$(pwd)"
 
