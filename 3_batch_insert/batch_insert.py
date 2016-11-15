@@ -31,6 +31,7 @@ def write_batch_scripts(template, placeholder, batch_file, prefix=None,
         path = os.path.join(location, str(names[i]))
         outfile = open(path, "w")
         outfile.write(out)
+        outfile.close()
 
 
 if __name__ == "__main__":
