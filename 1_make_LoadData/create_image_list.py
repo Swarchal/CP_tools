@@ -10,7 +10,15 @@ import os
 
 class ImageList(object):
     """
-    Create image lists from an ImageXpress experiment directory
+    Create image lists from an ImageXpress experiment directory.
+    ------------------------------------------------------------
+
+    Example showing how to create a LoadData csv file per plate
+
+        >> store = ImageList("/ImageExpress/2010-10-10/experiment_1")
+        >> store.create_load_data()
+        >> for name, data in store.load_data_files.items():
+        >>     data.to_csv(name, index=False)
     """
 
     def __init__(self, exp_dir):
@@ -92,8 +100,9 @@ class ImageList(object):
         """
         col_names = ["URL", "path", "Metadata_platename", "Metadata_well",
                      "Metadata_site", "Metadata_channel", "Metadata_platenum"]
+        # create image list store if it hasn't already been called
         if len(self.plate_img_store) == 0:
-            raise ValueError("plate_img_store is empty")
+            self.create_plate_img_store()
         # loop through dictionary of file-paths
         for plate, file_list in self.plate_img_store.items():
             filenames = pp.get_filename(file_list)
