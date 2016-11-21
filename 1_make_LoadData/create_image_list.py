@@ -145,3 +145,16 @@ class ImageList(object):
             wide_df["PathName_W" + str(i)] = wide_df.path
         wide_df.drop(["path"], axis=1, inplace=True)
         return wide_df
+
+
+    def to_csv(self, location):
+        """
+        store LoadData csv files in location
+        """
+        if len(self.load_data_files) == 0:
+            raise AttributeError("no load data files found")
+        if not os.path.isdir(location):
+            os.makedirs(location)
+        for name, dataframe in self.load_data_files.items():
+            save_path = os.path.join(location, name)
+            dataframe.to_csv(save_path + ".csv", index=False)
