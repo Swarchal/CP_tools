@@ -17,8 +17,7 @@ class ImageList(object):
 
         >> store = ImageList("/ImageExpress/2010-10-10/experiment_1")
         >> store.create_load_data()
-        >> for name, data in store.load_data_files.items():
-        >>     data.to_csv(name, index=False)
+        >> store.to_csv("/home/swarchal/data/experiment_1/load_data")
     """
 
     def __init__(self, exp_dir):
@@ -126,6 +125,7 @@ class ImageList(object):
 
     def _cast_dataframe(self, dataframe):
         """
+        internal function.
         reshape load_data_files dataframes from long to wide format
         """
         n_channels = len(set(dataframe.Metadata_channel))
@@ -149,12 +149,25 @@ class ImageList(object):
 
     def to_csv(self, location):
         """
-        store LoadData csv files in location
+        store LoadData as csv files in specified location.
+        Each plate will be saved separately as $(location)/$(platename).csv
+        If location is not an existing directory, then this will create the
+        directory if permissions allow.
+
+        Parameters:
+        ------------
+        location (string):
+            path to directory in which to store LoadData csv files
         """
         if len(self.load_data_files) == 0:
             raise AttributeError("no load data files found")
-        if not os.path.isdir(location):
-            os.makedirs(location)
+        try:
+            os.path.makedirs(location)
+        except OSError:
+            if os.path.isdir(location):
+                pass
+            else:
+                raise RuntimeError("failed to create directory {}".format(location))
         for name, dataframe in self.load_data_files.items():
             save_path = os.path.join(location, name)
             dataframe.to_csv(save_path + ".csv", index=False)
