@@ -85,9 +85,10 @@ class ImageList(object):
             self.plate_img_store = json.load(load_point)
 
 
-    def parse_metadata(self):
+    def create_load_data(self):
         """
-        parse metadata from file paths and convert into a dataframe
+        parse metadata from file paths and convert into a dataframe suitable
+        for CellProfiler's LoadData module
         """
         col_names = ["URL", "path", "Metadata_platename", "Metadata_well",
                      "Metadata_site", "Metadata_channel", "Metadata_platenum"]
@@ -98,7 +99,7 @@ class ImageList(object):
             filenames = pp.get_filename(file_list)
             pp.check_filename(filenames)
             df = pd.DataFrame(
-                zip(
+                list(zip(
                     filenames,
                     pp.get_path(file_list),
                     pp.get_platename(file_list),
@@ -106,7 +107,7 @@ class ImageList(object):
                     pp.get_metadata_site(file_list),
                     pp.get_metadata_channel(file_list),
                     pp.get_platenum(file_list)
-                    )
+                    ))
             )
             df.columns = col_names
             # reshape from long to wide format
