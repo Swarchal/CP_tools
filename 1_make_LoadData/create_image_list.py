@@ -2,9 +2,9 @@
 Class to create LoadData csv files from an ImageXpress experiment directory
 """
 
+from create_batch_list import create_batch_list
 import json
 import pandas as pd
-# TODO sort out parse_path functions for extracting metadata from filenames
 import parse_paths as pp
 import os
 
@@ -24,8 +24,11 @@ class ImageList(object):
         self.exp_dir = exp_dir
         self.img_files = []
         self.plate_names = set()
-        self.plate_img_store = dict()
+        self.plate_store = dict()
         self.load_data_files = dict()
+        self.load_data_location = dict()
+        self.load_data_stored = False
+        self.batch_list = dict()
 
 
     def __len__(self):
@@ -39,18 +42,19 @@ class ImageList(object):
         - return a list of valid image paths for all plates in that experiment.
         - return a set of platenames
         """
-        # TODO : speed this up! really slow.
+        # TODO : speed this up! really slow, and lots of inefficiencies
         #        worse-case could call a find command in subprocess
         for root, _, files in os.walk(self.exp_dir):
             for f in files:
                 if f.endswith(ext) and "thumb" not in f:
                     full_path = os.path.join(root, f)
                     self.img_files.append(full_path)
+                    # FIXME this doesn't need to be done per file, only per plate
                     platename = full_path.split(os.sep)[-4]
                     self.plate_names.add(platename)
 
 
-    def create_plate_img_store(self):
+    def create_platestore(self):
         """
         Create a dictionary:
         e.g {plate_name  : [list of img files],
@@ -63,7 +67,7 @@ class ImageList(object):
             # get only the image paths for a particular plate
             plate_img = [s for s in self.img_files if plate in s]
             # store in dictionary {plate : image_list}
-            self.plate_img_store[plate] = plate_img
+            self.plate_store[plate] = plate_img
 
 
     def to_json(self, location):
@@ -76,7 +80,7 @@ class ImageList(object):
             file path to save JSON file
         """
         with open(location, "wb") as save_point:
-            json.dump(self.plate_img_store, save_point, indent=4)
+            json.dump(self.plate_store, save_point, indent=4)
 
 
     def from_json(self, location):
@@ -89,10 +93,10 @@ class ImageList(object):
             file path of JSON file
         """
         with open(location, "r") as load_point:
-            self.plate_img_store = json.load(load_point)
+            self.plate_store = json.load(load_point)
 
 
-    def create_load_data(self):
+    def create_loaddata(self):
         """
         parse metadata from file paths and convert into a dataframe suitable
         for CellProfiler's LoadData module
@@ -100,10 +104,10 @@ class ImageList(object):
         col_names = ["URL", "path", "Metadata_platename", "Metadata_well",
                      "Metadata_site", "Metadata_channel", "Metadata_platenum"]
         # create image list store if it hasn't already been called
-        if len(self.plate_img_store) == 0:
-            self.create_plate_img_store()
+        if len(self.plate_store) == 0:
+            self.create_platestore()
         # loop through dictionary of file-paths
-        for plate, file_list in self.plate_img_store.items():
+        for plate, file_list in self.plate_store.items():
             filenames = pp.get_filename(file_list)
             pp.check_filename(filenames)
             df = pd.DataFrame(
@@ -123,7 +127,8 @@ class ImageList(object):
             self.load_data_files[plate] = wide_df
 
 
-    def _cast_dataframe(self, dataframe):
+    @staticmethod
+    def _cast_dataframe(dataframe):
         """
         internal function.
         reshape load_data_files dataframes from long to wide format
@@ -162,12 +167,75 @@ class ImageList(object):
         if len(self.load_data_files) == 0:
             raise AttributeError("no load data files found")
         try:
-            os.path.makedirs(location)
+            os.makedirs(location)
         except OSError:
             if os.path.isdir(location):
                 pass
             else:
                 raise RuntimeError("failed to create directory {}".format(location))
         for name, dataframe in self.load_data_files.items():
-            save_path = os.path.join(location, name)
-            dataframe.to_csv(save_path + ".csv", index=False)
+            save_path = os.path.join(location, name) + ".csv"
+            dataframe.to_csv(save_path, index=False)
+            self.load_data_location[name] = save_path
+        self.load_data_stored = True
+
+
+    def create_batchlist(self, pipeline, **kwargs):
+        """
+        Create a list of cellprofiler commands from a file-list and a pipeline.
+        This will use the LoadData files generated per plate and store
+        a list of cellprofiler commands in a dictionary, with an entry for each
+        plate.
+
+        Parameters:
+        ------------
+        pipeline (string):
+            path to pipeline
+        **kwargs :
+            additional arguments to create_batch_list()
+                - n_chunks (default = None)
+                - chunk_size (default = 20)
+                - output_prefix (default = None)
+                - full_path (default = True)
+                - path_prefix (default = "")
+        """
+
+
+        # TODO FIXME
+        ## inserting the entire dataframe where the location of the file list should go
+        ## might be worth re-writing create_batch_list specially for this module
+        ## can use the dict of LoadDatas rather than loading files from disk.
+        ## Although should refer to the actual files on disk
+
+        # create LoadData dataframes if create_loaddata() has not been called
+        if len(self.load_data_files) == 0:
+            self.create_loaddata()
+        if self.load_data_stored is False:
+            error_msg = "LoadData files have not yet been saved as csv"
+            raise AttributeError(error_msg)
+        for name, dataframe in self.load_data_files.items():
+            load_data_location = self.load_data_location[name]
+            self.batch_list[name] = create_batch_list(
+                loaddata=dataframe, pipeline=pipeline,
+                loaddata_path=load_data_location, **kwargs)
+
+
+    def batch_insert(self, template, location, placeholder="PLACEHOLDER"):
+        """
+        Insert cellprofiler commands into template SGE submission script.
+        This will generate a submission script for each batch command.
+
+        Parameters:
+        -----------
+        template (string):
+            path to template submission script
+        location (string):
+            path to directory to save the submissions scripts
+        placeholder (string) default = "PLACEHOLDER":
+            placeholder string in the submission script that will be replaced
+            by the cellprofiler command
+        """
+        # loop through batch lists and write each one to a file
+
+        pass
+
