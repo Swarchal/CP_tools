@@ -3,6 +3,7 @@ Class to create LoadData csv files from an ImageXpress experiment directory
 """
 
 from create_batch_list import create_batch_list
+from batch_insert import write_batch_script
 import json
 import pandas as pd
 import parse_paths as pp
@@ -13,11 +14,16 @@ class ImageList(object):
     Create image lists from an ImageXpress experiment directory.
     ------------------------------------------------------------
 
-    Example showing how to create a LoadData csv file per plate
+    Example showing how to create a LoadData csv file per plate:
 
         >> store = ImageList("/ImageExpress/2010-10-10/experiment_1")
         >> store.create_load_data()
         >> store.to_csv("/home/swarchal/data/experiment_1/load_data")
+
+    To create and insert cellprofiler batch commands into a submission script:
+        >> store.create_batch_list(pipeine="/path/to/pipeline.cppipe")
+        >> store.batch_insert(template="/path/to/template.sh",
+                              location="/path/to/ouput")
     """
 
     def __init__(self, exp_dir):
@@ -199,20 +205,14 @@ class ImageList(object):
                 - full_path (default = True)
                 - path_prefix (default = "")
         """
-
-
-        # TODO FIXME
-        ## inserting the entire dataframe where the location of the file list should go
-        ## might be worth re-writing create_batch_list specially for this module
-        ## can use the dict of LoadDatas rather than loading files from disk.
-        ## Although should refer to the actual files on disk
-
         # create LoadData dataframes if create_loaddata() has not been called
         if len(self.load_data_files) == 0:
             self.create_loaddata()
         if self.load_data_stored is False:
-            error_msg = "LoadData files have not yet been saved as csv"
-            raise AttributeError(error_msg)
+            msg = "LoadData files have not yet been saved as csv"
+            raise AttributeError(msg)
+        # clear any existing batch_list
+        self.batch_list = dict()
         for name, dataframe in self.load_data_files.items():
             load_data_location = self.load_data_location[name]
             self.batch_list[name] = create_batch_list(
@@ -235,7 +235,19 @@ class ImageList(object):
             placeholder string in the submission script that will be replaced
             by the cellprofiler command
         """
+        # check we actually have some batch commands
+        if len(self.batch_list) == 0:
+            msg = "No batch commands found, have you called create_batch_list?"
+            raise AttributeError(msg)
+        try:
+            os.makedirs(location)
+        except OSError:
+            if os.path.isdir(location):
+                pass
+            else:
+                msg = "Failed to create directory {}".format(location)
+                raise RuntimeError(msg)
         # loop through batch lists and write each one to a file
-
-        pass
-
+        for _, batch_cmds in self.batch_list.items():
+            write_batch_script(template=template, batch_list=batch_cmds,
+                               location=location, placeholder=placeholder)
