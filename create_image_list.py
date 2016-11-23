@@ -248,6 +248,6 @@ class ImageList(object):
                 msg = "Failed to create directory {}".format(location)
                 raise RuntimeError(msg)
         # loop through batch lists and write each one to a file
-        for _, batch_cmds in self.batch_list.items():
+        for batch_cmds in self.batch_list.values():
             write_batch_script(template=template, batch_list=batch_cmds,
                                location=location, placeholder=placeholder)
