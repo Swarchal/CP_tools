@@ -19,17 +19,38 @@ This will generate .csv files suitable for CellProfilers LoadData module. It wil
 ```python
 store.create_batchlist(pipeline="/path/to/pipeline.cppipe",
                        path_prefix="/exports/eddie/s0000")
+
 store.batch_insert(template="/path/to/template/script",
                    location="/path/to/store/submission_scripts")
 ```
 
 This will produce eddie submission scripts, having split the job into 20 image sets each, the cellprofiler jobs will save the output in `location`.
 
+The jobs will access the LoadData csv files from the location specified in `ImageList.to_csv()`, so make sure it's somewhere worker nodes have acess to, and that it's somewhere efficient (i.e the scratch space).
+
 
 ### Automatically generate submission scripts
 
-Not done this yet.
+```python
+./generate_scripts.py --experiment "path/to/experiment" \
+                      --loaddata_location "/home/user/loaddata" \
+                      --pipeline "/example/pipeline.cppipe" \
+                      --path_prefix "/exports/eddie/scratch/user" \
+                      --script_location "/home/user/submission_scripts"
+```
 
+Or, in shorthand:
+
+```python
+./generate_scripts.py -e "path/to/experiment" \
+                      -l "/home/user/loaddata" \
+                      -p "/example/pipeline.cppipe" \
+                      -r "/exports/eddie/scratch/user" \
+                      -o "/home/user/submission_scripts"
+
+```
+
+`./generate_scripts.py --help` for more info
 
 ### Merging the output
 
