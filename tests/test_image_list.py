@@ -5,6 +5,7 @@ anything
 
 import sys
 import os
+import shutil
 
 N_SITES_PLATE = 360
 N_CHANNELS = 5
@@ -22,7 +23,6 @@ def create_module_path():
 
 create_module_path()
 from create_image_list import ImageList
-
 
 # get path to test directory
 test_path = os.path.join(current_path, "example_dir")
@@ -80,5 +80,7 @@ def test_batch_insert():
     assert len(os.listdir(qsub_script_location)) > 0
 
 
-# TODO clear loaddata_save_location
-# TODO clear qsub_script_save_location
+def tearDown():
+    """tidy up after testing"""
+    shutil.rmtree(qsub_script_location)
+    shutil.rmtree(loaddata_save_location)
