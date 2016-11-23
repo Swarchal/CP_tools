@@ -31,7 +31,7 @@ The jobs will access the LoadData csv files from the location specified in `Imag
 
 ### Automatically generate submission scripts
 
-```python
+```bash
 ./generate_scripts.py --experiment "path/to/experiment" \
                       --loaddata_location "/home/user/loaddata" \
                       --pipeline "/example/pipeline.cppipe" \
@@ -41,7 +41,7 @@ The jobs will access the LoadData csv files from the location specified in `Imag
 
 Or, in shorthand:
 
-```python
+```bash
 ./generate_scripts.py -e "path/to/experiment" \
                       -l "/home/user/loaddata" \
                       -p "/example/pipeline.cppipe" \
