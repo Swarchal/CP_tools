@@ -6,11 +6,11 @@ import colfuncs
 from sqlalchemy import create_engine
 
 
-class ResultsDirectory:
+class ResultsDirectory(object):
 
     """
     Directory containing the .csv from a CellProfiler run
-    
+
     Methods
     -------
     create_db :
@@ -28,11 +28,13 @@ class ResultsDirectory:
         Get full filepaths of all files in a directory, including sub-directories
         """
         file_paths = []
-        for root, directories, files in os.walk(directory):
+        for root, _, files in os.walk(directory):
             for filename in files:
                 filepath = os.path.join(root, filename)
                 file_paths.append(filepath)
             self.file_paths = file_paths
+        self.db_handle = None
+        self.engine = None
 
 
     # create sqlite database
@@ -91,7 +93,7 @@ class ResultsDirectory:
             the name of the .csv file, this will also be the prefix of the
             database table name.
         header : int or list
-            the number of header rows. 
+            the number of header rows.
         by : string
             the column by which to group the data by.
         method : string (default="median")
@@ -191,7 +193,7 @@ def _check_featuredata(data, on, **kwargs):
     cols_to_check = [col for col in feature_cols if col not in [on]]
     df_to_check = data[cols_to_check]
     is_number = np.vectorize(lambda x: np.issubdtype(x, np.number))
-    if any(is_number(df_to_check.dtypes) == False):
+    if any(is_number(df_to_check.dtypes) is False):
         raise ValueError("non-numeric column found in feature data")
 
 
