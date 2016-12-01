@@ -1,5 +1,25 @@
 # Useful stuff for running CellProfiler on Eddie3
 
+
+## Batch processing
+To batch run a CellProfiler analysis on an imageset, we need to split the images into multiple smaller jobs that can be run independently on the cluster.
+To do this we can use `generate_scripts.py` to automatically generate the SGE submission scipts to analyse an experiment's images with a specified CellProfiler pipeline.
+
+### Automatically generate submission scripts
+
+```bash
+./generate_scripts.py --experiment "path/to/experiment" \
+                      --loaddata_location "/home/user/loaddata" \
+                      --pipeline "/example/pipeline.cppipe" \
+                      --path_prefix "/exports/eddie/scratch/user" \
+                      --script_location "/home/user/submission_scripts"
+```
+
+This will save the submission scripts in `--script_location` or `-o`, with each job containing approximately 20 images each.  
+The output from cellprofiler will be stored in the location given in `--path_prefix`, in a directory for each job named `path_prefix/platename_<JOB_NUMBER>`.
+
+See `./generate_scripts --help` for more info.
+
 ### Manually creating submission scripts via `ImageList`.
 
 You can generate the submission scripts via the `ImageList` class in python.
@@ -24,33 +44,7 @@ store.batch_insert(template="/path/to/template/script",
                    location="/path/to/store/submission_scripts")
 ```
 
-This will produce eddie submission scripts, having split the job into 20 image sets each, the cellprofiler jobs will save the output in `location`.
-
-The jobs will access the LoadData csv files from the location specified in `ImageList.to_csv()`, so make sure it's somewhere worker nodes have acess to, and that it's somewhere efficient (i.e the scratch space).
-
-
-### Automatically generate submission scripts
-
-```bash
-./generate_scripts.py --experiment "path/to/experiment" \
-                      --loaddata_location "/home/user/loaddata" \
-                      --pipeline "/example/pipeline.cppipe" \
-                      --path_prefix "/exports/eddie/scratch/user" \
-                      --script_location "/home/user/submission_scripts"
-```
-
-Or, in shorthand:
-
-```bash
-./generate_scripts.py -e "path/to/experiment" \
-                      -l "/home/user/loaddata" \
-                      -p "/example/pipeline.cppipe" \
-                      -r "/exports/eddie/scratch/user" \
-                      -o "/home/user/submission_scripts"
-
-```
-
-`./generate_scripts.py --help` for more info
+--------------------------------------------
 
 ### Merging the output
 
