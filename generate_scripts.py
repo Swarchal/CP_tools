@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import argparse
 import os
 from create_image_list import ImageList
