@@ -1,5 +1,5 @@
 """
-Test overall ImageList class on some example data to make sure I don't break
+ Test overall ImageList class on some example data to make sure I don't break
 anything
 """
 
@@ -137,6 +137,14 @@ def test_batch_insert():
     """insert commands into template script"""
     assert os.path.isdir(qsub_script_location)
     assert len(os.listdir(qsub_script_location)) > 0
+
+
+# all the way down here as want to carry out tests with all the plates
+def test_remove_plates():
+    """remove plates from plate_store"""
+    store.remove_plates(["test-plate-1"])
+    assert "test-plate-1" not in store.plate_names
+    assert "test-plate-1" not in store.plate_store.keys()
 
 
 def tearDown():
