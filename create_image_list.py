@@ -96,7 +96,7 @@ class ImageList(object):
         if keep is True:
             # remove those not in plate_list
             all_plates = self.plate_names
-            to_remove = list(set(all_plates) - plate_list)
+            to_remove = list(set(all_plates) - set(plate_list))
         if key_error is True:
             # KeyError if plate not found
             for plate in to_remove:
