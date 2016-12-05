@@ -2,12 +2,11 @@
 Class to create LoadData csv files from an ImageXpress experiment directory
 """
 
-from create_batch_list import create_batch_list
-from batch_insert import write_batch_script
-import json
+import os
 import pandas as pd
 import parse_paths as pp
-import os
+from create_batch_list import create_batch_list
+from batch_insert import write_batch_script
 
 class ImageList(object):
     """
@@ -98,32 +97,6 @@ class ImageList(object):
             to_remove = list(set(all_plates) - set(plate_list))
             for plate in to_remove:
                 self.plate_store.pop(plate)
-
-
-    def to_json(self, location):
-        """
-        store dictionary as JSON file
-
-        Parameters:
-        ------------
-        location (string) :
-            file path to save JSON file
-        """
-        with open(location, "wb") as save_point:
-            json.dump(self.plate_store, save_point, indent=4)
-
-
-    def from_json(self, location):
-        """
-        create plate : image_list dictionary from JSON dump
-
-        Parameters:
-        ------------
-        location (string):
-            file path of JSON file
-        """
-        with open(location, "r") as load_point:
-            self.plate_store = json.load(load_point)
 
 
     def create_loaddata(self):
