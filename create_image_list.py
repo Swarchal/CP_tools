@@ -16,14 +16,14 @@ class ImageList(object):
 
     Example showing how to create a LoadData csv file per plate:
 
-        >> store = ImageList("/ImageExpress/2010-10-10/experiment_1")
-        >> store.create_load_data()
-        >> store.to_csv("/home/swarchal/data/experiment_1/load_data")
+        >>> store = ImageList("/ImageExpress/2010-10-10/experiment_1")
+        >>> store.create_load_data()
+        >>> store.to_csv("/home/swarchal/data/experiment_1/load_data")
 
     To create and insert cellprofiler batch commands into a submission script:
-        >> store.create_batch_list(pipeine="/path/to/pipeline.cppipe")
-        >> store.batch_insert(template="/path/to/template.sh",
-                              location="/path/to/ouput")
+        >>> store.create_batch_list(pipeine="/path/to/pipeline.cppipe")
+        >>> store.batch_insert(template="/path/to/template.sh",
+                               location="/path/to/ouput")
     """
 
     def __init__(self, exp_dir):
@@ -178,7 +178,8 @@ class ImageList(object):
             if os.path.isdir(location):
                 pass
             else:
-                raise RuntimeError("failed to create directory {}".format(location))
+                err_msg = "failed to create directory {}".format(location)
+                raise RuntimeError(err_msg)
         for name, dataframe in self.load_data_files.items():
             save_path = os.path.join(location, name) + ".csv"
             dataframe.to_csv(save_path, index=False)
@@ -218,6 +219,40 @@ class ImageList(object):
             self.batch_list[name] = create_batch_list(
                 loaddata=dataframe, pipeline=pipeline,
                 loaddata_path=load_data_location, **kwargs)
+
+
+    def save_batchlist(self, location, name="batch_commands.txt",
+                       combined=False):
+        """
+        output batch commands as a text files. Useful if submitting an array
+        job rather than inserting into individual submission scripts.
+
+        Parameters:
+        ------------
+        location : string
+            Directory in which to save output
+        name : string
+            Name of file (only used when combined=True). If combined is False,
+            then the individual files will be named after the plate they came
+            from
+        combined : boolean
+            If True, will combine multiple plate's batch commands into a single
+            text file. If False, then will save a text file per plate
+        """
+        if combined is True:
+            # all plates in a single file
+            nested = self.batch_list.values()
+            # unlist list of lists
+            batch_commands = [item for sublist in nested for item in sublist]
+            with open(os.path.join(location, name) ,"w") as out_file:
+                out_file.write("\n".join(batch_commands))
+        elif combined is False:
+            # file per plate
+            for plate, batch_commands in self.batch_list.items():
+                with open(os.path.join(location, plate), "w") as out_file:
+                    out_file.write("\n".join(batch_commands))
+        else:
+            raise ValueError("combined needs to be a boolean")
 
 
     def batch_insert(self, template, location, placeholder="PLACEHOLDER"):
