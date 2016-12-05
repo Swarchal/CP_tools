@@ -76,6 +76,30 @@ class ImageList(object):
             self.plate_store[plate] = plate_img
 
 
+    def remove_plates(self, plate_list, keep=False):
+        """
+        Remove plates from platestore.
+
+        Parameters:
+        -----------
+        plate_list : list of strings
+            list of plate names
+        keep : boolean
+            if False, then the plates in `plate_list` will be removed. If True,
+            then the paltes in `plate_list` will be kept and all others removed
+        """
+        if keep is False:
+            # remove plates in plate_list from dictionary
+            for plate in plate_list:
+                self.plate_store.pop(plate)
+        if keep is True:
+            # remove all EXCEPT the plates in plate_list
+            all_plates = self.plate_store.keys()
+            to_remove = list(set(all_plates) - set(plate_list))
+            for plate in to_remove:
+                self.plate_store.pop(plate)
+
+
     def to_json(self, location):
         """
         store dictionary as JSON file
