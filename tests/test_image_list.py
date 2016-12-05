@@ -3,6 +3,7 @@
 anything
 """
 
+from nose.tools import raises
 import sys
 import os
 import shutil
@@ -120,7 +121,7 @@ def test_save_batch_list_combn2():
     files = os.listdir(batchlist_save_location_combn2)
     print(files)
     assert len(files) == 1
-    assert str(files[0]) == "writing_tests_is_dull"
+    assert str(files[0]) == filename
 
 
 def test_save_batch_list_combn3():
@@ -139,12 +140,36 @@ def test_batch_insert():
     assert len(os.listdir(qsub_script_location)) > 0
 
 
-# all the way down here as want to carry out tests with all the plates
+# all the way down here as these plates will be removed, and I can't be bothered
+# to create the image list again
 def test_remove_plates():
     """remove plates from plate_store"""
     store.remove_plates(["test-plate-1"])
     assert "test-plate-1" not in store.plate_names
     assert "test-plate-1" not in store.plate_store.keys()
+
+
+def test_remove_plates2():
+    """remove plates -> catch KeyErrors"""
+    plates_to_remove = ["test-plate-2", "not a plate"]
+    store.remove_plates(plates_to_remove, key_error=False)
+    assert len(store.plate_names) == 2
+
+
+@raises(KeyError)
+def test_remove_plates3():
+    """remove plates -> expect KeyError"""
+    plates_to_remove = ["not here" "test-plate-3"]
+    store.remove_plates(plates_to_remove, key_error=True)
+
+
+def test_remove_plates4():
+    """remove plates -> keep argument works"""
+    plates_to_remove = ["test-plate-4"]
+    store.remove_plates(plates_to_remove, keep=True)
+    assert len(store.plate_names) == 1
+    assert list(store.plate_names)[0] == plates_to_remove[0]
+
 
 
 def tearDown():
