@@ -75,7 +75,7 @@ class ImageList(object):
             self.plate_store[plate] = plate_img
 
 
-    def remove_plates(self, plate_list, keep=False):
+    def remove_plates(self, plate_list, keep=False, key_error=True):
         """
         Remove plates from ImageList.plate_store and ImageStore.plate_names
 
@@ -86,19 +86,30 @@ class ImageList(object):
         keep : boolean
             if False, then the plates in `plate_list` will be removed. If True,
             then the paltes in `plate_list` will be kept and all others removed
+        key_error : boolean
+            Error if plate name not found
         """
+        assert isinstance(plate_list, list)
         if keep is False:
-            # remove plates in plate_list from dictionary
-            for plate in plate_list:
-                self.plate_store.pop(plate)
-                self.plate_names.remove(plate)
+            # remove those in plate_list
+            to_remove = plate_list
         if keep is True:
-            # remove all EXCEPT the plates in plate_list
-            all_plates = self.plate_store.keys()
-            to_remove = list(set(all_plates) - set(plate_list))
+            # remove those not in plate_list
+            all_plates = self.plate_names
+            to_remove = list(set(all_plates) - plate_list)
+        if key_error is True:
+            # KeyError if plate not found
             for plate in to_remove:
                 self.plate_store.pop(plate)
                 self.plate_names.remove(plate)
+        else:
+            # catch KeyErrors
+            for plate in plate_list:
+                try:
+                    self.plate_store.pop(plate)
+                    self.plate_names.remove(plate)
+                except KeyError:
+                    pass
 
 
     def create_loaddata(self):
