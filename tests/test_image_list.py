@@ -13,39 +13,37 @@ N_CHANNELS = 5
 N_PLATES = 4
 PATH_PREFIX = "/exports/eddie/user"
 PIPELINE = "/example/pipeline.cppipe"
-
-
-current_path = os.path.dirname(__file__)
+CURRENT_PATH = os.path.dirname(__file__)
 
 def create_module_path():
     """need to import ImageList class from ../create_image_list.py"""
-    module_path = os.path.realpath(os.path.join(current_path, ".."))
+    module_path = os.path.realpath(os.path.join(CURRENT_PATH, ".."))
     sys.path.append(module_path)
 
 create_module_path()
 from create_image_list import ImageList
 
 # get path to test directory
-test_path = os.path.join(current_path, "example_dir")
+test_path = os.path.join(CURRENT_PATH, "example_dir")
 
 store = ImageList(test_path)
 
 store.create_loaddata()
 
 # place to save test loaddata
-loaddata_save_location = os.path.join(current_path, ".test_loaddata")
+loaddata_save_location = os.path.join(CURRENT_PATH, ".test_loaddata")
 store.to_csv(loaddata_save_location)
 
-batchlist_save_location_indv = os.path.join(current_path, ".test_batchlist_indv")
-batchlist_save_location_combn = os.path.join(current_path, ".test_batchlist_combn")
-batchlist_save_location_combn2 = os.path.join(current_path, ".test_batchlist_combn2")
+batchlist_save_location_indv = os.path.join(CURRENT_PATH, ".test_batchlist_indv")
+batchlist_save_location_combn = os.path.join(CURRENT_PATH, ".test_batchlist_combn")
+batchlist_save_location_combn2 = os.path.join(CURRENT_PATH, ".test_batchlist_combn2")
 
 store.create_batchlist(pipeline=PIPELINE,
                        path_prefix=PATH_PREFIX)
 
 
-template_path = os.path.realpath(os.path.join(current_path, "..", "template_job.sh"))
-qsub_script_location = os.path.join(current_path, ".test_submission_script")
+template_path = os.path.realpath(os.path.join(CURRENT_PATH, "..", "template_job.sh"))
+qsub_script_location = os.path.join(CURRENT_PATH, ".test_submission_script")
 
 store.batch_insert(template=template_path,
                    location=qsub_script_location)
