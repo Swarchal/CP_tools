@@ -77,7 +77,7 @@ class ImageList(object):
 
     def remove_plates(self, plate_list, keep=False):
         """
-        Remove plates from platestore.
+        Remove plates from ImageList.plate_store and ImageStore.plate_names
 
         Parameters:
         -----------
@@ -91,12 +91,14 @@ class ImageList(object):
             # remove plates in plate_list from dictionary
             for plate in plate_list:
                 self.plate_store.pop(plate)
+                self.plate_names.remove(plate)
         if keep is True:
             # remove all EXCEPT the plates in plate_list
             all_plates = self.plate_store.keys()
             to_remove = list(set(all_plates) - set(plate_list))
             for plate in to_remove:
                 self.plate_store.pop(plate)
+                self.plate_names.remove(plate)
 
 
     def create_loaddata(self):
