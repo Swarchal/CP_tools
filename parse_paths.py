@@ -15,7 +15,9 @@ def check_filename(file_list, char="_"):
     for f in file_list:
         if len(f) < 20:
             raise ValueError("Filename {} too short".format(f))
-        if len(f.split(char)) < 4:
+        # get just the filename and check for metadata values
+        filename = str(f.split(os.sep)[-1])
+        if len(filename.split(char)) < 4:
             raise ValueError("Filename {} contains too few metadata values".format(f))
 
 
