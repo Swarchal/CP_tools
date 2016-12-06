@@ -1,5 +1,5 @@
 """
- Test overall ImageList class on some example data to make sure I don't break
+Test overall ImageList class on some example data to make sure I don't break
 anything
 """
 
@@ -63,7 +63,11 @@ def test_load_data_correct_images_plate():
 
 def test_saved_to_csv():
     """load data files saved as csv"""
-    assert len(os.listdir(loaddata_save_location)) == N_PLATES
+    output = os.listdir(loaddata_save_location)
+    assert len(output) == N_PLATES
+    for i in output:
+        assert i.endswith(".csv")
+    assert len(set(output)) == len(output)
 
 
 def test_create_batch_list():

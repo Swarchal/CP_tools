@@ -262,7 +262,7 @@ class ImageList(object):
             nested = self.batch_list.values()
             # unlist list of lists
             batch_commands = [item for sublist in nested for item in sublist]
-            with open(os.path.join(location, name),"w") as out_file:
+            with open(os.path.join(location, name), "w") as out_file:
                 out_file.write("\n".join(batch_commands))
         elif combined is False:
             # file per plate

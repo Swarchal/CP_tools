@@ -71,8 +71,8 @@ def test_get_platename():
     """parse_paths.get_platename returns correct platename"""
     names = parse_paths.get_platename(test_files)
     plate_names = ["test-plate-" + i for i in "1234"]
-    for name in names:
-        assert name in plate_names
+    for p_name in names:
+        assert p_name in plate_names
     assert len(names) == len(test_files)
     assert len(set(names)) == 4
 
