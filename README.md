@@ -9,10 +9,10 @@ To do this we can use `generate_scripts.py` to automatically generate the SGE su
 
 ```bash
 ./generate_scripts.py --experiment "path/to/experiment" \
-                      --loaddata_location "/home/user/loaddata" \
+                      --loaddata-location "/home/user/loaddata" \
                       --pipeline "/example/pipeline.cppipe" \
-                      --path_prefix "/exports/eddie/scratch/user" \
-                      --script_location "/home/user/submission_scripts"
+                      --path-prefix "/exports/eddie/scratch/user" \
+                      --script-location "/home/user/submission_scripts"
 ```
 
 This will save the submission scripts in `--script_location` or `-o`, with each job containing approximately 20 images each.  
@@ -46,7 +46,7 @@ store.batch_insert(template="/path/to/template/script",
 
 --------------------------------------------
 
-### Merging the output
+## Merging the output
 
 After running cellprofiler on the cluster you will have multiple .csv files, with the number dictated by how large your image list is and how many jobs you split it into.
 
