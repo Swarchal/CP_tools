@@ -232,7 +232,7 @@ class ImageList(object):
 
 
     def save_batchlist(self, location, name="batch_commands.txt",
-                       combined=False):
+                       combined=True):
         """
         output batch commands as a text files. Useful if submitting an array
         job rather than inserting into individual submission scripts.
