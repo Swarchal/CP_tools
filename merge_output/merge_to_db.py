@@ -193,7 +193,7 @@ def _check_featuredata(data, on, **kwargs):
     cols_to_check = [col for col in feature_cols if col not in [on]]
     df_to_check = data[cols_to_check]
     is_number = np.vectorize(lambda x: np.issubdtype(x, np.number))
-    if any(is_number(df_to_check.dtypes) is False):
+    if any(is_number(df_to_check.dtypes) == False):
         raise ValueError("non-numeric column found in feature data")
 
 
