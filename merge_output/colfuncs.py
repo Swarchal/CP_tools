@@ -1,3 +1,9 @@
+"""
+Functions for dealing with dataframe column names
+"""
+
+import pandas as pd
+
 def inflate_cols(df):
     """
     Given a DataFrame with collapsed multi-index columns this will
