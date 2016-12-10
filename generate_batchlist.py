@@ -34,4 +34,4 @@ if __name__ == "__main__":
     store.to_csv(location=arguments.loaddata_location)
     store.create_batchlist(pipeline=arguments.pipeline,
                            path_prefix=arguments.path_prefix)
-    store.save_batchlist(location=arguments.ouput_location)
+    store.save_batchlist(location=arguments.output_location)
