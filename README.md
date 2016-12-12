@@ -20,6 +20,48 @@ The output from cellprofiler will be stored in the location given in `--path_pre
 
 See `./generate_scripts --help` for more info.
 
+
+### Generating batchlists
+
+For a large numbers of jobs, it's often prefered to submit a single array job that references a list of cellprofiler commands, rather than substituting those cellprofiler commands into individual submission scripts. Therefore we can create a file that just contains a cellprofiler command on each line (a `batchlist`), that we can run using an array-job on the cluster.
+
+```bash
+./generate_batchlist.py --experiment "path/to/experiment" \
+                        --loaddata-location "/home/user/loaddata" \
+                        --pipeline "/example/pipeline.cppipe" \
+                        --path-prefix "/exports/eddie/scratch/user"
+```
+
+We can can then use a single submission script run as an array-job to run all the cellprofiler commands - which stops angry emails from the cluster admins.
+
+
+e.g to run 10,000 cellprofiler commands from `/exports/user/batchlist.txt`
+```bash
+#!/bin/bash
+#$ -l h_vmem=6G
+#$ -l h_rt=03:00:00
+#$ -j y
+#$ -o /exports/user/scratch
+#$ -t 1-10000
+
+. /etc/profile.d/modules.sh
+
+module load igmm/apps/hdf5/1.8.16
+module load igmm/apps/python/2.7.10
+module load igmm/apps/jdk/1.8.0_66
+module load igmm/libs/libpng/1.6.18
+
+source /exports/igmm/eddie/Drug-Discovery/virtualenv-1.10/myVE/bin/activate
+source ~/.bash_profile
+
+SEEDFILE=/exports/user/batchlist.txt
+SEED=$(awk "NR==$SGE_TASK_ID" $SEEDFILE)
+
+$SEED
+
+```
+
+
 ### Manually creating submission scripts via `ImageList`.
 
 You can generate the submission scripts via the `ImageList` class in python.
