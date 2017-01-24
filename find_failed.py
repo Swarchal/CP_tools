@@ -29,9 +29,9 @@ def find_failed_jobs(dirs, expected=2):
     """
     out = []
     for i in os.listdir(dirs):
-	full_path = os.path.join(os.path.abspath(dirs), i)
-	if has_failed(full_path, expected):
-	    out.append(i)
+    full_path = os.path.join(os.path.abspath(dirs), i)
+    if has_failed(full_path, expected):
+        out.append(i)
     return out
 
 
