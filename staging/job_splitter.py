@@ -1,5 +1,5 @@
-from parserix import parse
-import pandas as pd
+from parserix import parse as _parse
+import pandas as _pd
 
 def job_splitter(img_list, job_size=96):
     """split imagelist into an imagelist per job containing job_size images"""
@@ -18,7 +18,7 @@ def _group_images(df_img):
     grouped_list = []
     for _, group in  df_img.groupby(["Metadata_well", "Metadata_site"]):
         grouped = list(group["img_paths"])
-        channel_nums = [parse.img_channel(i) for i in grouped]
+        channel_nums = [_parse.img_channel(i) for i in grouped]
         # create tuple (path, channel_number) and sort by channel number
         sort_im = sorted(list(zip(grouped, channel_nums)), key=lambda x: x[1])
         # return on the file-paths back from the list of tuples
@@ -28,11 +28,11 @@ def _group_images(df_img):
 
 def _well_site_table(imglist):
     """return pandas dataframe with metadata columns"""
-    final_files = [parse.img_filename(i) for i in imglist]
-    df_img = pd.DataFrame({
+    final_files = [_parse.img_filename(i) for i in imglist]
+    df_img = _pd.DataFrame({
         "img_paths"     : imglist,
-        "Metadata_well" : [parse.img_well(i) for i in final_files],
-        "Metadata_site" : [parse.img_site(i) for i in final_files]
+        "Metadata_well" : [_parse.img_well(i) for i in final_files],
+        "Metadata_site" : [_parse.img_site(i) for i in final_files]
         })
     return df_img
 
