@@ -85,7 +85,7 @@ class ResultsDirectory(object):
 
 
     def to_db_agg(self, select="DATA", header=0, by="ImageNumber",
-                  method="median", **kwargs):
+                  method="median", prefix=False, **kwargs):
         """
         Parameters
         -----------
@@ -98,6 +98,10 @@ class ResultsDirectory(object):
             the column by which to group the data by.
         method : string (default="median")
             method by which to average groups, median or mean
+        prefix : Boolean
+            whether the metadata label required for discerning featuredata
+            and metadata needs to be a prefix, or can just be contained within
+            the column name
         **kwargs : additional arguments to pandas.read_csv and aggregate
         """
         # filter files
