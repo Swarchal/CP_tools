@@ -1,6 +1,6 @@
 # Useful stuff for running CellProfiler on Eddie3
 
-**Deprecated due to UoE moving away from AFM. See [cptools2](www.github.com/swarchal/cptools2)**
+**Deprecated due to UoE moving away from AFM. See [cptools2](https://www.github.com/swarchal/cptools2)**
 
 ## Batch processing
 To batch run a CellProfiler analysis on an imageset, we need to split the images into multiple smaller jobs that can be run independently on the cluster.
